@@ -216,6 +216,7 @@ function render() {
     el.tbody.innerHTML = `<tr><td colspan="11" style=\"color:#a8b2d1;padding:16px;\">該当データがありません</td></tr>`;
     return;
   }
+  const now = new Date();
   const html = rows.map(r => {
     const dateStr = r.date_only ? fmtDate(r.date_only) : (r.date || "");
     const startStr = r.start_dt ? `${fmtTime(r.start_dt)}` : (r.start_time || "");
@@ -224,8 +225,14 @@ function render() {
     const addOnStr = r.add_on != null ? r.add_on.toLocaleString() : "";
     const totalPrizeStr = r.total_prize != null ? r.total_prize.toLocaleString() : "";
     const multStr = (r.multiplier != null && isFinite(r.multiplier)) ? `${(Math.round(r.multiplier * 10) / 10).toFixed(1)}x` : "";
+    
+    // Check if late registration time has passed
+    const isLateRegistrationPassed = r.late_reg_dt && r.late_reg_dt < now;
+    
     let rowClass = '';
-    if (r.multiplier != null && isFinite(r.multiplier)) {
+    if (isLateRegistrationPassed) {
+      rowClass = 'late-reg-expired';
+    } else if (r.multiplier != null && isFinite(r.multiplier)) {
       if (r.multiplier >= 30) rowClass = 'hl-mult-30plus';
       else if (r.multiplier >= 20) rowClass = 'hl-mult-20plus';
       else if (r.multiplier >= 10) rowClass = 'hl-mult-10to19';
