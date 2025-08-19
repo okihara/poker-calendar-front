@@ -99,6 +99,15 @@ function fmtDate(d) {
   return `${y}-${m}-${day}`; // for input[type=date] and display
 }
 
+function fmtDateJapanese(d) {
+  if (!(d instanceof Date)) return "";
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  const weekday = weekdays[d.getDay()];
+  return `${m}/${day}(${weekday})`;
+}
+
 function normalizeRow(row) {
   const entry_fee = parseIntSafe(row.entry_fee);
   const add_on = parseIntSafe(row.add_on);
@@ -291,6 +300,11 @@ function debounce(fn, wait = 250) {
 }
 
 async function fetchAndInit() {
+  // Update page title with current date
+  const today = new Date();
+  const todayStr = fmtDateJapanese(today);
+  document.querySelector('.app-header h1').textContent = `🃏今日のポーカートーナメント ${todayStr}`;
+  
   setStatus("読み込み中...");
   try {
     await new Promise((resolve, reject) => {
