@@ -144,6 +144,17 @@ body {
   vertical-align: top;
 }
 .data-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+/* Title link styles */
+.title-link {
+  color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+.title-link:hover {
+  text-decoration: underline;
+  filter: brightness(1.1);
+}
 .data-table .number { text-align: right; }
 
 /* High multiplier highlight (>= 20x) */

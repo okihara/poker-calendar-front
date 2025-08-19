@@ -231,6 +231,10 @@ function render() {
       else if (r.multiplier >= 10) rowClass = 'hl-mult-10to19';
     }
 
+    const titleContent = r.link ? 
+      `<a href="${r.link}" class="title-link">${r.title || ""}</a>` : 
+      (r.title || "");
+
     return `
       <tr class="${rowClass}">
         <td data-label="開催日">${dateStr}</td>
@@ -238,7 +242,7 @@ function render() {
         <td data-label="レイト">${lateStr}</td>
         <td data-label="エリア">${r.area || ""}</td>
         <td data-label="店名">${r.shop_name || ""}</td>
-        <td data-label="タイトル">${r.title || ""}</td>
+        <td data-label="タイトル">${titleContent}</td>
         <td class="number" data-label="参加費">${feeStr}</td>
         <td class="number" data-label="アドオン">${addOnStr}</td>
         <td class="number" data-label="プライズ総額">${totalPrizeStr}</td>
@@ -269,6 +273,7 @@ function onHeaderClick(e) {
   }
   update();
 }
+
 
 function debounce(fn, wait = 250) {
   let t;
