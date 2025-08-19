@@ -232,11 +232,9 @@ body {
     white-space: normal;
   }
 
-  /* Only show: 開始, 店名, 参加費, 倍率 */
+  /* Only show: 開始, レイト, 店名, タイトル, 参加費, 倍率 */
   .data-table tbody td[data-label="開催日"],
-  .data-table tbody td[data-label="レイト"],
   .data-table tbody td[data-label="エリア"],
-  .data-table tbody td[data-label="タイトル"],
   .data-table tbody td[data-label="アドオン"],
   .data-table tbody td[data-label="プライズ総額"],
   .data-table tbody td[data-label="プライズ概要"] {
