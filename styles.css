@@ -146,6 +146,34 @@ body {
 .data-table tbody tr:hover { background: rgba(255,255,255,0.03); }
 .data-table .number { text-align: right; }
 
+/* High multiplier highlight (>= 20x) */
+.data-table tbody tr.highlight-high-mult {
+  background: rgba(128, 0, 0, 0.25);
+}
+.data-table tbody tr.highlight-high-mult:hover {
+  background: rgba(128, 0, 0, 0.35);
+}
+
+/* Multiplier-based highlights */
+.data-table tbody tr.hl-mult-10to19 {
+  background: rgba(0, 128, 0, 0.22); /* green-ish */
+}
+.data-table tbody tr.hl-mult-10to19:hover {
+  background: rgba(0, 128, 0, 0.32);
+}
+.data-table tbody tr.hl-mult-20plus {
+  background: rgba(128, 0, 0, 0.25); /* dark red */
+}
+.data-table tbody tr.hl-mult-20plus:hover {
+  background: rgba(128, 0, 0, 0.35);
+}
+.data-table tbody tr.hl-mult-30plus {
+  background: rgba(102, 51, 153, 0.28); /* purple */
+}
+.data-table tbody tr.hl-mult-30plus:hover {
+  background: rgba(102, 51, 153, 0.38);
+}
+
 .badge-link a {
   display: inline-flex;
   align-items: center;

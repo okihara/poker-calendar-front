@@ -156,9 +156,15 @@ function render() {
     const addOnStr = r.add_on != null ? r.add_on.toLocaleString() : "";
     const totalPrizeStr = r.total_prize != null ? r.total_prize.toLocaleString() : "";
     const multStr = (r.multiplier != null && isFinite(r.multiplier)) ? `${(Math.round(r.multiplier * 10) / 10).toFixed(1)}x` : "";
+    let rowClass = '';
+    if (r.multiplier != null && isFinite(r.multiplier)) {
+      if (r.multiplier >= 30) rowClass = 'hl-mult-30plus';
+      else if (r.multiplier >= 20) rowClass = 'hl-mult-20plus';
+      else if (r.multiplier >= 10) rowClass = 'hl-mult-10to19';
+    }
 
     return `
-      <tr>
+      <tr class="${rowClass}">
         <td>${dateStr}</td>
         <td>${startStr}</td>
         <td>${lateStr}</td>
