@@ -14,6 +14,7 @@ const el = {
   tbody: document.getElementById("tbody"),
   table: document.getElementById("table"),
   areaToggles: document.getElementById("areaToggles"),
+  multToggles: document.getElementById("multToggles"),
 };
 
 function parseIntSafe(v) {
@@ -92,14 +93,31 @@ function setStatus(msg) {
 // area toggles: buttons with .area-btn.active represent enabled filters
 
 function applyFilters() {
-  const allActive = !!document.querySelector('.area-btn[data-area="ALL"].active');
-  const activeAreas = Array.from(document.querySelectorAll('.area-btn.active'))
+  // Area filter
+  const allActive = !!el.areaToggles?.querySelector('.area-btn[data-area="ALL"].active');
+  const activeAreas = Array.from(el.areaToggles?.querySelectorAll('.area-btn.active') || [])
     .map(b => b.dataset.area)
-    .filter(a => a !== 'ALL');
+    .filter(a => !!a && a !== 'ALL');
   let rows = state.data.slice();
 
   if (!allActive && activeAreas.length > 0) {
     rows = rows.filter(r => activeAreas.includes((r.area || "").trim()));
+  }
+
+  // Multiplier filter
+  if (el.multToggles) {
+    const multAll = !!el.multToggles.querySelector('.area-btn[data-mult="ALL"].active');
+    if (!multAll) {
+      const activeMultBtn = el.multToggles.querySelector('.area-btn.active:not([data-mult="ALL"])');
+      const sel = activeMultBtn?.dataset.mult;
+      if (sel === '10-19') {
+        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 10 && r.multiplier < 20);
+      } else if (sel === '20-29') {
+        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 20 && r.multiplier < 30);
+      } else if (sel === '30plus') {
+        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30);
+      }
+    }
   }
 
   state.filtered = rows;
@@ -263,6 +281,33 @@ function bindEvents() {
         } else {
           // Activate this area, deactivate other specific areas and ALL
           el.areaToggles.querySelectorAll('.area-btn:not([data-area="ALL"])').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          allBtn.classList.remove('active');
+        }
+      }
+      update();
+    });
+  }
+
+  if (el.multToggles) {
+    el.multToggles.addEventListener('click', (e) => {
+      const btn = e.target.closest('.area-btn');
+      if (!btn) return;
+      const mult = btn.dataset.mult;
+      const allBtn = el.multToggles.querySelector('.area-btn[data-mult="ALL"]');
+
+      if (mult === 'ALL') {
+        allBtn.classList.add('active');
+        el.multToggles.querySelectorAll('.area-btn').forEach(b => {
+          if (b !== allBtn) b.classList.remove('active');
+        });
+      } else {
+        const isActive = btn.classList.contains('active');
+        if (isActive) {
+          btn.classList.remove('active');
+          allBtn.classList.add('active');
+        } else {
+          el.multToggles.querySelectorAll('.area-btn:not([data-mult="ALL"])').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           allBtn.classList.remove('active');
         }
