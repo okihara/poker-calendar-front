@@ -93,7 +93,7 @@ body {
 @media (max-width: 1024px) {
   .control-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .control-row { grid-template-columns: 1fr 1fr; }
 }
 
@@ -189,7 +189,7 @@ body {
 }
 
 /* ===== Mobile (narrow) table to card layout ===== */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .data-table { min-width: 0; }
   .data-table thead { display: none; }
   .data-table tbody, .data-table tr, .data-table td { display: block; width: 100%; }
