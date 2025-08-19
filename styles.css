@@ -202,6 +202,20 @@ body {
 }
 .data-table .number { text-align: right; }
 
+/* Column width adjustments for PC only */
+@media (min-width: 769px) {
+  .data-table th[data-key="date_only"],
+  .data-table td[data-label="開催日"] {
+    width: 120px;
+    min-width: 120px;
+  }
+  .data-table th[data-key="late_registration_time"],
+  .data-table td[data-label="レイト"] {
+    width: 80px;
+    min-width: 80px;
+  }
+}
+
 /* High multiplier highlight (>= 20x) */
 .data-table tbody tr.highlight-high-mult {
   background: rgba(239, 68, 68, 0.25); /* vivid red */
