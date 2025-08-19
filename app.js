@@ -248,15 +248,17 @@ function bindEvents() {
           if (b !== allBtn) b.classList.remove('active');
         });
       } else {
-        // Toggle specific area
-        btn.classList.toggle('active');
-        const anySpecificActive = el.areaToggles.querySelector('.area-btn.active:not([data-area="ALL"])');
-        if (anySpecificActive) {
-          // If any specific area active, ALL off
-          allBtn.classList.remove('active');
-        } else {
-          // If none active, turn ALL back on
+        // Mutually exclusive: only one specific area at a time
+        const isActive = btn.classList.contains('active');
+        if (isActive) {
+          // If clicking the already active area, revert to ALL
+          btn.classList.remove('active');
           allBtn.classList.add('active');
+        } else {
+          // Activate this area, deactivate other specific areas and ALL
+          el.areaToggles.querySelectorAll('.area-btn:not([data-area="ALL"])').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          allBtn.classList.remove('active');
         }
       }
       update();
