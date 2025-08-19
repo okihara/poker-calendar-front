@@ -187,3 +187,52 @@ body {
   padding: 16px;
   color: var(--muted);
 }
+
+/* ===== Mobile (narrow) table to card layout ===== */
+@media (max-width: 640px) {
+  .data-table { min-width: 0; }
+  .data-table thead { display: none; }
+  .data-table tbody, .data-table tr, .data-table td { display: block; width: 100%; }
+  .data-table tbody tr { background: rgba(20, 28, 58, 0.7); border-radius: 10px; margin: 8px 6px; overflow: hidden; }
+  .data-table tbody tr + tr { margin-top: 14px; }
+  .data-table tbody td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+  }
+  .data-table tbody td:first-child { border-top: 0; padding-top: 12px; }
+  .data-table tbody td:last-child { padding-bottom: 12px; }
+  .data-table tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .data-table .number { text-align: right; }
+  /* Emphasize important fields */
+  td[data-label="タイトル"] { font-weight: 600; }
+  td[data-label="倍率"] { font-weight: 600; }
+  /* Line clamp for prize text */
+  td.prize-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+  }
+
+  /* Only show: 開始, 店名, 参加費, 倍率 */
+  td[data-label="開催日"],
+  td[data-label="レイト"],
+  td[data-label="エリア"],
+  td[data-label="タイトル"],
+  td[data-label="アドオン"],
+  td[data-label="プライズ総額"],
+  td[data-label="プライズ概要"] {
+    display: none;
+  }
+}

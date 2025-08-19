@@ -233,17 +233,17 @@ function render() {
 
     return `
       <tr class="${rowClass}">
-        <td>${dateStr}</td>
-        <td>${startStr}</td>
-        <td>${lateStr}</td>
-        <td>${r.area || ""}</td>
-        <td>${r.shop_name || ""}</td>
-        <td>${r.title || ""}</td>
-        <td class="number">${feeStr}</td>
-        <td class="number">${addOnStr}</td>
-        <td class="number">${totalPrizeStr}</td>
-        <td class="number">${multStr}</td>
-        <td>${(r.prize_text || "").toString().replace(/\n+/g, ' / ')}</td>
+        <td data-label="開催日">${dateStr}</td>
+        <td data-label="開始">${startStr}</td>
+        <td data-label="レイト">${lateStr}</td>
+        <td data-label="エリア">${r.area || ""}</td>
+        <td data-label="店名">${r.shop_name || ""}</td>
+        <td data-label="タイトル">${r.title || ""}</td>
+        <td class="number" data-label="参加費">${feeStr}</td>
+        <td class="number" data-label="アドオン">${addOnStr}</td>
+        <td class="number" data-label="プライズ総額">${totalPrizeStr}</td>
+        <td class="number" data-label="倍率">${multStr}</td>
+        <td class="prize-text" data-label="プライズ概要">${(r.prize_text || "").toString().replace(/\n+/g, ' / ')}</td>
       </tr>`;
   }).join("");
   el.tbody.innerHTML = html;
