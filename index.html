@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>トーナメント一覧（CSV表示）</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- PapaParse for robust CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
+  <script src="./app.js" type="module" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <h1>トーナメント一覧</h1>
+    <p class="subtitle">Googleスプレッドシート（公開CSV）を取得して表示・フィルタ・ソート</p>
+  </header>
+
+  <section class="controls">
+    <div class="control-row">
+      <label class="control">
+        <span>フリーテキスト</span>
+        <input id="q" type="search" placeholder="店名・タイトル・住所など" />
+      </label>
+      <label class="control">
+        <span>エリア</span>
+        <select id="area">
+          <option value="">すべて</option>
+        </select>
+      </label>
+      <label class="control">
+        <span>日付</span>
+        <input id="date" type="date" />
+      </label>
+      <label class="control">
+        <span>参加費(最小)</span>
+        <input id="feeMin" type="number" min="0" placeholder="例: 0" />
+      </label>
+      <label class="control">
+        <span>参加費(最大)</span>
+        <input id="feeMax" type="number" min="0" placeholder="例: 5000" />
+      </label>
+      <button id="clear" class="clear-btn" type="button">クリア</button>
+    </div>
+  </section>
+
+  <main>
+    <div id="status" class="status">読み込み中...</div>
+
+    <div class="table-wrap">
+      <table id="table" class="data-table">
+        <thead>
+          <tr>
+            <th data-key="start_time" class="sortable">開始</th>
+            <th data-key="shop_name" class="sortable">店舗</th>
+            <th data-key="area" class="sortable">エリア</th>
+            <th data-key="title" class="sortable">タイトル</th>
+            <th data-key="entry_fee" class="sortable number">参加費</th>
+            <th data-key="add_on" class="sortable number">アドオン</th>
+            <th data-key="guaranteed_amount" class="sortable number">GTD</th>
+            <th>詳細</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <small>
+      データ元: <a href="https://docs.google.com/spreadsheets/" target="_blank" rel="noreferrer noopener">Googleスプレッドシート（公開CSV）</a>
+    </small>
+  </footer>
+</body>
+</html>
