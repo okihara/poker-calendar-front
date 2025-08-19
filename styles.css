@@ -42,7 +42,7 @@ body {
 .area-btn {
   appearance: none;
   border: 1px solid var(--border);
-  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  background: #ffffff;
   color: var(--text);
   border-radius: 999px;
   padding: 8px 14px;
@@ -53,9 +53,8 @@ body {
   filter: brightness(1.06);
 }
 .area-btn.active {
-  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59,130,246,0.25);
+  background: #333333;
+  border-color: #333333;
   color: white;
 }
 
@@ -108,7 +107,7 @@ body {
   align-self: stretch;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  background: #ffffff;
   color: var(--text);
   font-weight: 600;
 }
