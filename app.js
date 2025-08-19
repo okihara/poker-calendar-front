@@ -25,6 +25,48 @@ function parseIntSafe(v) {
   return Number.isFinite(n) ? n : null;
 }
 
+// Parse prize_list text and sum numeric amounts.
+// Supported examples:
+//  - "50000/30000/20000"
+//  - "5k, 3k, 2k"
+//  - "5,000円 ×2 / 2,500"
+//  - "1万/5千"（万=10000, 千=1000）
+//  - "50,000 + Ticket"（非数値は無視）
+function parsePrizeListSum(text) {
+  if (!text) return null;
+  const s = String(text).replace(/［|］|【|】/g, "");
+  let sum = 0;
+  let found = false;
+  // Match number with optional unit and optional multiplier like x2 or ×2
+  const re = /(\d{1,3}(?:[,\d]{0,3})*(?:\.\d+)?|\d+(?:\.\d+)?)\s*(万|千|k|K|m|M|円)?\s*(?:[x×]\s*(\d+))?/g;
+  let m;
+  while ((m = re.exec(s)) !== null) {
+    let numStr = m[1];
+    const unit = m[2] || "";
+    const timesStr = m[3];
+    // Normalize number string
+    numStr = numStr.replace(/,/g, "");
+    let base = Number(numStr);
+    if (!Number.isFinite(base)) continue;
+    // Apply unit
+    switch (unit) {
+      case '万': base *= 10000; break;
+      case '千': base *= 1000; break;
+      case 'k':
+      case 'K': base *= 1000; break;
+      case 'm':
+      case 'M': base *= 1000000; break;
+      // '円' or no unit: treat as JPY
+    }
+    // Multiplier like x2
+    const times = timesStr ? Number(timesStr) : 1;
+    if (Number.isFinite(times) && times > 0) base *= times;
+    sum += base;
+    found = true;
+  }
+  return found ? Math.round(sum) : null;
+}
+
 function parseDateTimeJP(s) {
   // expects like "2025/08/19 13:00" or "2025/08/19"
   if (!s) return null;
@@ -61,14 +103,22 @@ function normalizeRow(row) {
   const entry_fee = parseIntSafe(row.entry_fee);
   const add_on = parseIntSafe(row.add_on);
   const guaranteed_amount = parseIntSafe(row.guaranteed_amount);
-  const total_prize = parseIntSafe(row.total_prize);
+  // Prefer prize_list aggregation if available; fallback to total_prize field
+  const total_from_list = parsePrizeListSum(row.prize_list || row.prize_text);
+  const total_prize_field = parseIntSafe(row.total_prize);
+  const total_prize = total_from_list != null ? total_from_list : total_prize_field;
 
   const dateOnly = parseDateTimeJP(row.date);
   const startDT = parseDateTimeJP(row.start_time);
   const lateRegDT = parseDateTimeJP(row.late_registration_time);
-  const multiplier = (guaranteed_amount != null && entry_fee && entry_fee > 0)
-    ? (guaranteed_amount / entry_fee)
+  // Multiplier: use total prize sum divided by entry fee
+  let multiplier = (total_prize != null && entry_fee && entry_fee > 0)
+    ? (total_prize / entry_fee)
     : null;
+  // Invalidate unrealistic multiplier (>= 50)
+  if (multiplier != null && isFinite(multiplier) && multiplier >= 50) {
+    multiplier = null;
+  }
 
   return {
     ...row,
