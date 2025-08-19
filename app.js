@@ -13,12 +13,7 @@ const el = {
   status: document.getElementById("status"),
   tbody: document.getElementById("tbody"),
   table: document.getElementById("table"),
-  q: document.getElementById("q"),
-  area: document.getElementById("area"),
-  date: document.getElementById("date"),
-  feeMin: document.getElementById("feeMin"),
-  feeMax: document.getElementById("feeMax"),
-  clear: document.getElementById("clear"),
+  areaToggles: document.getElementById("areaToggles"),
 };
 
 function parseIntSafe(v) {
@@ -88,56 +83,17 @@ function setStatus(msg) {
   el.status.textContent = msg || "";
 }
 
-function uniqueAreas(rows) {
-  const s = new Set();
-  rows.forEach(r => {
-    const a = (r.area || "").trim();
-    if (a) s.add(a);
-  });
-  return Array.from(s).sort((a,b)=>a.localeCompare(b, "ja"));
-}
-
-function buildAreaOptions(rows) {
-  const areas = uniqueAreas(rows);
-  for (const a of areas) {
-    const opt = document.createElement("option");
-    opt.value = a;
-    opt.textContent = a;
-    el.area.appendChild(opt);
-  }
-}
+// area toggles: buttons with .area-btn.active represent enabled filters
 
 function applyFilters() {
-  const q = (el.q.value || "").trim().toLowerCase();
-  const area = el.area.value || "";
-  const dateStr = el.date.value || ""; // yyyy-mm-dd
-  const feeMin = el.feeMin.value !== "" ? Number(el.feeMin.value) : null;
-  const feeMax = el.feeMax.value !== "" ? Number(el.feeMax.value) : null;
-
+  const allActive = !!document.querySelector('.area-btn[data-area="ALL"].active');
+  const activeAreas = Array.from(document.querySelectorAll('.area-btn.active'))
+    .map(b => b.dataset.area)
+    .filter(a => a !== 'ALL');
   let rows = state.data.slice();
 
-  if (q) {
-    rows = rows.filter(r => {
-      const hay = [r.shop_name, r.title, r.address, r.area, r.prize_text, r.prize_list]
-        .map(x => (x || "").toString().toLowerCase())
-        .join("\n");
-      return hay.includes(q);
-    });
-  }
-
-  if (area) {
-    rows = rows.filter(r => (r.area || "") === area);
-  }
-
-  if (dateStr) {
-    rows = rows.filter(r => r.date_only && fmtDate(r.date_only) === dateStr);
-  }
-
-  if (feeMin != null) {
-    rows = rows.filter(r => (r.entry_fee ?? Infinity) >= feeMin);
-  }
-  if (feeMax != null) {
-    rows = rows.filter(r => (r.entry_fee ?? -Infinity) <= feeMax);
+  if (!allActive && activeAreas.length > 0) {
+    rows = rows.filter(r => activeAreas.includes((r.area || "").trim()));
   }
 
   state.filtered = rows;
@@ -247,14 +203,6 @@ async function fetchAndInit() {
         complete: (results) => {
           state.raw = results.data || [];
           state.data = state.raw.map(normalizeRow);
-          buildAreaOptions(state.data);
-
-          // 初期日付: 本日 or 最初の行の日付
-          const todayStr = fmtDate(new Date());
-          const hasToday = state.data.some(r => r.date_only && fmtDate(r.date_only) === todayStr);
-          if (hasToday) {
-            el.date.value = todayStr;
-          }
 
           // 初期ソート: start_time 昇順
           state.sort = { key: "start_time", dir: "asc" };
@@ -274,17 +222,34 @@ async function fetchAndInit() {
 
 function bindEvents() {
   el.table.addEventListener("click", onHeaderClick);
-  el.q.addEventListener("input", debounce(update, 250));
-  [el.area, el.date, el.feeMin, el.feeMax].forEach(x => x.addEventListener("change", update));
-  el.clear.addEventListener("click", () => {
-    el.q.value = "";
-    el.area.value = "";
-    el.date.value = "";
-    el.feeMin.value = "";
-    el.feeMax.value = "";
-    state.sort = { key: "start_time", dir: "asc" };
-    update();
-  });
+  if (el.areaToggles) {
+    el.areaToggles.addEventListener('click', (e) => {
+      const btn = e.target.closest('.area-btn');
+      if (!btn) return;
+      const area = btn.dataset.area;
+      const allBtn = el.areaToggles.querySelector('.area-btn[data-area="ALL"]');
+
+      if (area === 'ALL') {
+        // Activate ALL and deactivate others
+        allBtn.classList.add('active');
+        el.areaToggles.querySelectorAll('.area-btn').forEach(b => {
+          if (b !== allBtn) b.classList.remove('active');
+        });
+      } else {
+        // Toggle specific area
+        btn.classList.toggle('active');
+        const anySpecificActive = el.areaToggles.querySelector('.area-btn.active:not([data-area="ALL"])');
+        if (anySpecificActive) {
+          // If any specific area active, ALL off
+          allBtn.classList.remove('active');
+        } else {
+          // If none active, turn ALL back on
+          allBtn.classList.add('active');
+        }
+      }
+      update();
+    });
+  }
 }
 
 bindEvents();

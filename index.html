@@ -16,30 +16,11 @@
   </header>
 
   <section class="controls">
-    <div class="control-row">
-      <label class="control">
-        <span>フリーテキスト</span>
-        <input id="q" type="search" placeholder="店名・タイトル・住所など" />
-      </label>
-      <label class="control">
-        <span>エリア</span>
-        <select id="area">
-          <option value="">すべて</option>
-        </select>
-      </label>
-      <label class="control">
-        <span>日付</span>
-        <input id="date" type="date" />
-      </label>
-      <label class="control">
-        <span>参加費(最小)</span>
-        <input id="feeMin" type="number" min="0" placeholder="例: 0" />
-      </label>
-      <label class="control">
-        <span>参加費(最大)</span>
-        <input id="feeMax" type="number" min="0" placeholder="例: 5000" />
-      </label>
-      <button id="clear" class="clear-btn" type="button">クリア</button>
+    <div class="area-toggle-group" id="areaToggles" aria-label="エリアフィルター">
+      <button type="button" class="area-btn active" data-area="ALL">ALL</button>
+      <button type="button" class="area-btn" data-area="六本木">六本木</button>
+      <button type="button" class="area-btn" data-area="渋谷">渋谷</button>
+      <button type="button" class="area-btn" data-area="新宿">新宿</button>
     </div>
   </section>
 

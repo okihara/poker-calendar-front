@@ -34,6 +34,29 @@ body {
 .controls {
   padding: 12px 16px 0;
 }
+.area-toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.area-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #21306d 0%, #18224e 100%);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.area-btn:hover {
+  filter: brightness(1.06);
+}
+.area-btn.active {
+  background: linear-gradient(180deg, #3a7afe 0%, #2d62c7 100%);
+  border-color: #3a7afe;
+  box-shadow: 0 0 0 2px rgba(58,122,254,0.25);
+}
 .control-row {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
