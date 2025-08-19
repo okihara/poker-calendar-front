@@ -391,6 +391,22 @@ function bindEvents() {
       update();
     });
   }
+
+  // Bind late registration expired toggle
+  const showLateExpiredCheckbox = document.getElementById('showLateExpired');
+  const table = document.getElementById('table');
+  if (showLateExpiredCheckbox && table) {
+    // Set initial state to hide late expired
+    table.classList.add('hide-late-expired');
+    
+    showLateExpiredCheckbox.addEventListener('change', () => {
+      if (showLateExpiredCheckbox.checked) {
+        table.classList.remove('hide-late-expired');
+      } else {
+        table.classList.add('hide-late-expired');
+      }
+    });
+  }
 }
 
 bindEvents();

@@ -57,6 +57,29 @@ body {
   border-color: #3a7afe;
   box-shadow: 0 0 0 2px rgba(58,122,254,0.25);
 }
+
+/* Late toggle styles */
+.late-toggle-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.late-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text);
+}
+.late-toggle-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+.late-toggle-text {
+  user-select: none;
+}
 .control-row {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -173,6 +196,11 @@ body {
   text-decoration: none;
   filter: none;
 }
+
+/* Hide late registration expired when toggle is off */
+.data-table.hide-late-expired tbody tr.late-reg-expired {
+  display: none !important;
+}
 .data-table .number { text-align: right; }
 
 /* High multiplier highlight (>= 20x) */
@@ -276,4 +304,5 @@ body {
   .data-table tbody td[data-label="プライズ概要"] {
     display: none !important;
   }
+
 }
