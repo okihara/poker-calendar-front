@@ -65,6 +65,9 @@ function normalizeRow(row) {
   const dateOnly = parseDateTimeJP(row.date);
   const startDT = parseDateTimeJP(row.start_time);
   const lateRegDT = parseDateTimeJP(row.late_registration_time);
+  const multiplier = (guaranteed_amount != null && entry_fee && entry_fee > 0)
+    ? (guaranteed_amount / entry_fee)
+    : null;
 
   return {
     ...row,
@@ -73,9 +76,12 @@ function normalizeRow(row) {
     guaranteed_amount,
     total_prize,
     date_only: dateOnly,
+    date_only_ts: dateOnly ? new Date(dateOnly.getFullYear(), dateOnly.getMonth(), dateOnly.getDate()).getTime() : -Infinity,
     start_dt: startDT,
     start_time_ts: startDT ? startDT.getTime() : -Infinity,
     late_reg_dt: lateRegDT,
+    late_reg_ts: lateRegDT ? lateRegDT.getTime() : -Infinity,
+    multiplier,
   };
 }
 
@@ -103,14 +109,17 @@ function sortRows() {
   const { key, dir } = state.sort;
   const mul = dir === "desc" ? -1 : 1;
 
-  const numKeys = new Set(["entry_fee", "add_on", "guaranteed_amount", "total_prize", "start_time", "start_time_ts"]);
-  const dateKey = key === "start_time" ? "start_time_ts" : key;
+  const numKeys = new Set(["entry_fee", "add_on", "guaranteed_amount", "total_prize", "start_time", "start_time_ts", "date_only_ts", "late_reg_ts", "multiplier"]);
+  let effectiveKey = key;
+  if (key === "start_time") effectiveKey = "start_time_ts";
+  if (key === "date_only") effectiveKey = "date_only_ts";
+  if (key === "late_registration_time") effectiveKey = "late_reg_ts";
 
   state.filtered.sort((a, b) => {
-    const ka = dateKey in a ? a[dateKey] : a[key];
-    const kb = dateKey in b ? b[dateKey] : b[key];
+    const ka = effectiveKey in a ? a[effectiveKey] : a[key];
+    const kb = effectiveKey in b ? b[effectiveKey] : b[key];
 
-    const an = numKeys.has(key) || dateKey === "start_time_ts";
+    const an = numKeys.has(effectiveKey);
 
     const va = an ? Number(ka ?? -Infinity) : String(ka ?? "").toLowerCase();
     const vb = an ? Number(kb ?? -Infinity) : String(kb ?? "").toLowerCase();
@@ -136,28 +145,31 @@ function updateSortIndicator() {
 function render() {
   const rows = state.filtered;
   if (!rows.length) {
-    el.tbody.innerHTML = `<tr><td colspan="8" style="color:#a8b2d1;padding:16px;">該当データがありません</td></tr>`;
+    el.tbody.innerHTML = `<tr><td colspan="11" style=\"color:#a8b2d1;padding:16px;\">該当データがありません</td></tr>`;
     return;
   }
   const html = rows.map(r => {
-    const startStr = r.start_dt ? `${fmtDate(r.start_dt)} ${fmtTime(r.start_dt)}` : (r.start_time || "");
+    const dateStr = r.date_only ? fmtDate(r.date_only) : (r.date || "");
+    const startStr = r.start_dt ? `${fmtTime(r.start_dt)}` : (r.start_time || "");
+    const lateStr = r.late_reg_dt ? `${fmtTime(r.late_reg_dt)}` : (r.late_registration_time || "");
     const feeStr = r.entry_fee != null ? r.entry_fee.toLocaleString() : "";
     const addOnStr = r.add_on != null ? r.add_on.toLocaleString() : "";
-    const gtdStr = r.guaranteed_amount != null ? r.guaranteed_amount.toLocaleString() : "";
-
-    const link = r.link || "";
-    const linkHtml = link ? `<span class="badge-link"><a href="${link}" target="_blank" rel="noreferrer noopener">リンク↗</a></span>` : "";
+    const totalPrizeStr = r.total_prize != null ? r.total_prize.toLocaleString() : "";
+    const multStr = (r.multiplier != null && isFinite(r.multiplier)) ? `${(Math.round(r.multiplier * 10) / 10).toFixed(1)}x` : "";
 
     return `
       <tr>
+        <td>${dateStr}</td>
         <td>${startStr}</td>
-        <td>${r.shop_name || ""}</td>
+        <td>${lateStr}</td>
         <td>${r.area || ""}</td>
+        <td>${r.shop_name || ""}</td>
         <td>${r.title || ""}</td>
         <td class="number">${feeStr}</td>
         <td class="number">${addOnStr}</td>
-        <td class="number">${gtdStr}</td>
-        <td>${linkHtml}</td>
+        <td class="number">${totalPrizeStr}</td>
+        <td class="number">${multStr}</td>
+        <td>${(r.prize_text || "").toString().replace(/\n+/g, ' / ')}</td>
       </tr>`;
   }).join("");
   el.tbody.innerHTML = html;

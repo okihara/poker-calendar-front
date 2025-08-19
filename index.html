@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>トーナメント一覧（CSV表示）</title>
+  <title>今日のポーカートーナメント</title>
   <link rel="stylesheet" href="./styles.css" />
   <!-- PapaParse for robust CSV parsing -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
@@ -11,8 +11,7 @@
 </head>
 <body>
   <header class="app-header">
-    <h1>トーナメント一覧</h1>
-    <p class="subtitle">Googleスプレッドシート（公開CSV）を取得して表示・フィルタ・ソート</p>
+    <h1>今日のポーカートーナメント</h1>
   </header>
 
   <section class="controls">
@@ -31,14 +30,17 @@
       <table id="table" class="data-table">
         <thead>
           <tr>
+            <th data-key="date_only" class="sortable">開催日</th>
             <th data-key="start_time" class="sortable">開始</th>
-            <th data-key="shop_name" class="sortable">店舗</th>
+            <th data-key="late_registration_time" class="sortable">レイト</th>
             <th data-key="area" class="sortable">エリア</th>
+            <th data-key="shop_name" class="sortable">店名</th>
             <th data-key="title" class="sortable">タイトル</th>
             <th data-key="entry_fee" class="sortable number">参加費</th>
             <th data-key="add_on" class="sortable number">アドオン</th>
-            <th data-key="guaranteed_amount" class="sortable number">GTD</th>
-            <th>詳細</th>
+            <th data-key="total_prize" class="sortable number">プライズ総額</th>
+            <th data-key="multiplier" class="sortable number">枠数</th>
+            <th data-key="prize_text" class="sortable">プライズ概要</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
