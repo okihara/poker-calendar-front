@@ -15,6 +15,7 @@ const el = {
   table: document.getElementById("table"),
   areaToggles: document.getElementById("areaToggles"),
   multToggles: document.getElementById("multToggles"),
+  titleToggles: document.getElementById("titleToggles"),
 };
 
 function parseIntSafe(v) {
@@ -175,6 +176,24 @@ function applyFilters() {
         rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 20 && r.multiplier < 30);
       } else if (sel === '30plus') {
         rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30);
+      }
+    }
+  }
+
+  // Title filter
+  if (el.titleToggles) {
+    const titleAll = !!el.titleToggles.querySelector('.area-btn[data-title="ALL"].active');
+    if (!titleAll) {
+      const activeTitleBtns = Array.from(el.titleToggles.querySelectorAll('.area-btn.active:not([data-title="ALL"])') || []);
+      const activeTitles = activeTitleBtns.map(b => b.dataset.title).filter(t => !!t);
+      
+      if (activeTitles.length > 0) {
+        rows = rows.filter(r => {
+          const title = (r.title || "").toLowerCase();
+          return activeTitles.some(activeTitle => 
+            title.includes(activeTitle.toLowerCase())
+          );
+        });
       }
     }
   }
@@ -384,6 +403,35 @@ function bindEvents() {
           allBtn.classList.add('active');
         } else {
           el.multToggles.querySelectorAll('.area-btn:not([data-mult="ALL"])').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          allBtn.classList.remove('active');
+        }
+      }
+      update();
+    });
+  }
+
+  // Bind title toggles
+  if (el.titleToggles) {
+    el.titleToggles.addEventListener('click', (e) => {
+      const btn = e.target.closest('.area-btn');
+      if (!btn) return;
+      const title = btn.dataset.title;
+      const allBtn = el.titleToggles.querySelector('.area-btn[data-title="ALL"]');
+
+      if (title === 'ALL') {
+        // Activate ALL and deactivate others
+        allBtn.classList.add('active');
+        el.titleToggles.querySelectorAll('.area-btn').forEach(b => {
+          if (b !== allBtn) b.classList.remove('active');
+        });
+      } else {
+        const isActive = btn.classList.contains('active');
+        if (isActive) {
+          btn.classList.remove('active');
+          allBtn.classList.add('active');
+        } else {
+          el.titleToggles.querySelectorAll('.area-btn:not([data-title="ALL"])').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           allBtn.classList.remove('active');
         }
