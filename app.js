@@ -444,7 +444,7 @@ function bindEvents() {
   const showLateExpiredCheckbox = document.getElementById('showLateExpired');
   const table = document.getElementById('table');
   if (showLateExpiredCheckbox && table) {
-    // Set initial state to hide late expired
+    // Set initial state to hide late expired (default unchecked = hide)
     table.classList.add('hide-late-expired');
     
     showLateExpiredCheckbox.addEventListener('change', () => {
