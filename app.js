@@ -16,6 +16,7 @@ const el = {
   areaToggles: document.getElementById("areaToggles"),
   multToggles: document.getElementById("multToggles"),
   titleToggles: document.getElementById("titleToggles"),
+  searchInput: null, // Will be initialized in bindEvents
 };
 
 function parseIntSafe(v) {
@@ -186,15 +187,30 @@ function applyFilters() {
     if (!titleAll) {
       const activeTitleBtns = Array.from(el.titleToggles.querySelectorAll('.area-btn.active:not([data-title="ALL"])') || []);
       const activeTitles = activeTitleBtns.map(b => b.dataset.title).filter(t => !!t);
-      
+
       if (activeTitles.length > 0) {
         rows = rows.filter(r => {
           const title = (r.title || "").toLowerCase();
-          return activeTitles.some(activeTitle => 
+          return activeTitles.some(activeTitle =>
             title.includes(activeTitle.toLowerCase())
           );
         });
       }
+    }
+  }
+
+  // Search filter (店名・タイトル・エリア)
+  if (el.searchInput) {
+    const searchTerm = el.searchInput.value.trim().toLowerCase();
+    if (searchTerm) {
+      rows = rows.filter(r => {
+        const shopName = (r.shop_name || "").toLowerCase();
+        const title = (r.title || "").toLowerCase();
+        const area = (r.area || "").toLowerCase();
+        return shopName.includes(searchTerm) ||
+               title.includes(searchTerm) ||
+               area.includes(searchTerm);
+      });
     }
   }
 
@@ -255,6 +271,7 @@ function render() {
     const multStr = (r.multiplier != null && isFinite(r.multiplier)) ? `${(Math.round(r.multiplier * 10) / 10).toFixed(1)}x` : "";
     
     // Check if late registration time has passed
+    console.log(r, now);
     const isLateRegistrationPassed = r.late_reg_dt && r.late_reg_dt < now;
     
     let rowClass = '';
@@ -446,13 +463,21 @@ function bindEvents() {
   if (showLateExpiredCheckbox && table) {
     // Set initial state to hide late expired (default unchecked = hide)
     table.classList.add('hide-late-expired');
-    
+
     showLateExpiredCheckbox.addEventListener('change', () => {
       if (showLateExpiredCheckbox.checked) {
         table.classList.remove('hide-late-expired');
       } else {
         table.classList.add('hide-late-expired');
       }
+    });
+  }
+
+  // Bind search input
+  el.searchInput = document.getElementById('searchInput');
+  if (el.searchInput) {
+    el.searchInput.addEventListener('input', () => {
+      update(); // デバウンスなし、キー入力ごとに即座に更新
     });
   }
 }
