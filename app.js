@@ -475,9 +475,25 @@ function bindEvents() {
 
   // Bind search input
   el.searchInput = document.getElementById('searchInput');
+  const clearSearchBtn = document.getElementById('clearSearch');
+
   if (el.searchInput) {
     el.searchInput.addEventListener('input', () => {
       update(); // デバウンスなし、キー入力ごとに即座に更新
+      // Show/hide clear button based on input
+      if (clearSearchBtn) {
+        clearSearchBtn.style.display = el.searchInput.value ? 'flex' : 'none';
+      }
+    });
+  }
+
+  // Bind clear search button
+  if (clearSearchBtn && el.searchInput) {
+    clearSearchBtn.addEventListener('click', () => {
+      el.searchInput.value = '';
+      clearSearchBtn.style.display = 'none';
+      update();
+      el.searchInput.focus();
     });
   }
 }
