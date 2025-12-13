@@ -310,6 +310,7 @@ function update() {
   sortRows();
   updateSortIndicator();
   render();
+  updateURLFromFilters();
 }
 
 function onHeaderClick(e) {
@@ -366,6 +367,112 @@ async function fetchAndInit() {
     console.error(e);
     setStatus("読み込みに失敗しました。ネットワークやCSVの公開設定を確認してください。");
   }
+}
+
+// URLクエリパラメータからフィルター状態を読み込む
+function loadFiltersFromURL() {
+  const params = new URLSearchParams(window.location.search);
+
+  // エリア
+  const area = params.get('area');
+  if (area && el.areaToggles) {
+    const allBtn = el.areaToggles.querySelector('.area-btn[data-area="ALL"]');
+    const targetBtn = el.areaToggles.querySelector(`.area-btn[data-area="${area}"]`);
+    if (targetBtn && area !== 'ALL') {
+      allBtn?.classList.remove('active');
+      el.areaToggles.querySelectorAll('.area-btn:not([data-area="ALL"])').forEach(b => b.classList.remove('active'));
+      targetBtn.classList.add('active');
+    }
+  }
+
+  // 倍率
+  const mult = params.get('mult');
+  if (mult && el.multToggles) {
+    const allBtn = el.multToggles.querySelector('.area-btn[data-mult="ALL"]');
+    const targetBtn = el.multToggles.querySelector(`.area-btn[data-mult="${mult}"]`);
+    if (targetBtn && mult !== 'ALL') {
+      allBtn?.classList.remove('active');
+      el.multToggles.querySelectorAll('.area-btn:not([data-mult="ALL"])').forEach(b => b.classList.remove('active'));
+      targetBtn.classList.add('active');
+    }
+  }
+
+  // タイトル
+  const title = params.get('title');
+  if (title && el.titleToggles) {
+    const allBtn = el.titleToggles.querySelector('.area-btn[data-title="ALL"]');
+    const targetBtn = el.titleToggles.querySelector(`.area-btn[data-title="${title}"]`);
+    if (targetBtn && title !== 'ALL') {
+      allBtn?.classList.remove('active');
+      el.titleToggles.querySelectorAll('.area-btn:not([data-title="ALL"])').forEach(b => b.classList.remove('active'));
+      targetBtn.classList.add('active');
+    }
+  }
+
+  // 検索
+  const search = params.get('search');
+  if (search && el.searchInput) {
+    el.searchInput.value = search;
+    const clearSearchBtn = document.getElementById('clearSearch');
+    if (clearSearchBtn) {
+      clearSearchBtn.style.display = 'flex';
+    }
+  }
+
+  // レイト過ぎ表示
+  const showLate = params.get('showLate');
+  const showLateExpiredCheckbox = document.getElementById('showLateExpired');
+  const table = document.getElementById('table');
+  if (showLate === '1' && showLateExpiredCheckbox && table) {
+    showLateExpiredCheckbox.checked = true;
+    table.classList.remove('hide-late-expired');
+  }
+}
+
+// 現在のフィルター状態をURLクエリパラメータに反映する
+function updateURLFromFilters() {
+  const params = new URLSearchParams();
+
+  // エリア
+  if (el.areaToggles) {
+    const activeAreaBtn = el.areaToggles.querySelector('.area-btn.active:not([data-area="ALL"])');
+    if (activeAreaBtn) {
+      params.set('area', activeAreaBtn.dataset.area);
+    }
+  }
+
+  // 倍率
+  if (el.multToggles) {
+    const activeMultBtn = el.multToggles.querySelector('.area-btn.active:not([data-mult="ALL"])');
+    if (activeMultBtn) {
+      params.set('mult', activeMultBtn.dataset.mult);
+    }
+  }
+
+  // タイトル
+  if (el.titleToggles) {
+    const activeTitleBtn = el.titleToggles.querySelector('.area-btn.active:not([data-title="ALL"])');
+    if (activeTitleBtn) {
+      params.set('title', activeTitleBtn.dataset.title);
+    }
+  }
+
+  // 検索
+  if (el.searchInput && el.searchInput.value.trim()) {
+    params.set('search', el.searchInput.value.trim());
+  }
+
+  // レイト過ぎ表示
+  const showLateExpiredCheckbox = document.getElementById('showLateExpired');
+  if (showLateExpiredCheckbox && showLateExpiredCheckbox.checked) {
+    params.set('showLate', '1');
+  }
+
+  // URLを更新（履歴に追加せずに置き換え）
+  const newURL = params.toString()
+    ? `${window.location.pathname}?${params.toString()}`
+    : window.location.pathname;
+  window.history.replaceState({}, '', newURL);
 }
 
 function bindEvents() {
@@ -496,6 +603,9 @@ function bindEvents() {
       el.searchInput.focus();
     });
   }
+
+  // URLクエリパラメータからフィルター状態を読み込む
+  loadFiltersFromURL();
 }
 
 bindEvents();
