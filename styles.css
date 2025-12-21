@@ -524,19 +524,19 @@ body {
 
   /* 倍率別ハイライト（カード左ボーダー） */
   .data-table tbody tr.hl-mult-10to19 .mobile-card {
-    border-left: 4px solid #22c55e;
+    border-left: 8px solid #22c55e;
   }
 
   .data-table tbody tr.hl-mult-20plus .mobile-card {
-    border-left: 4px solid #f97316;
+    border-left: 8px solid #f97316;
   }
 
   .data-table tbody tr.hl-mult-30plus .mobile-card {
-    border-left: 4px solid #a855f7;
+    border-left: 8px solid #a855f7;
   }
 
   .data-table tbody tr.hl-mult-50plus .mobile-card {
-    border-left: 4px solid #ef4444;
+    border-left: 8px solid #ef4444;
   }
 
   /* レイト終了済みを非表示（トグルオフ時） */
