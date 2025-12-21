@@ -380,7 +380,7 @@ function updateCount() {
   const total = state.data.length;
   const filtered = state.filtered.length;
   if (el.count) {
-    el.count.textContent = ` トナメ件数: ${filtered} / ${total}`;
+    el.count.textContent = ` 登録数: ${filtered} / ${total}`;
   }
 }
 
@@ -422,7 +422,7 @@ async function fetchAndInit() {
   const todayStr = fmtDateJapanese(today);
   const h1 = document.querySelector('.app-header h1');
   const countSpan = h1.querySelector('#count');
-  h1.innerHTML = `🃏今日のポーカートーナメント ${todayStr} `;
+  h1.innerHTML = `ポーカーハウストナメ検索 ${todayStr} `;
   h1.appendChild(countSpan);
   
   setStatus("読み込み中...");

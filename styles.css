@@ -19,15 +19,18 @@ body {
 }
 
 .app-header {
-  padding: 24px 16px 8px;
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  padding: 20px 16px;
+  color: #ffffff;
 }
 .app-header h1 {
-  margin: 0 0 6px;
+  margin: 0;
   font-size: 22px;
+  color: #ffffff;
 }
 .app-header .subtitle {
   margin: 0;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 13px;
 }
 
@@ -184,7 +187,7 @@ body {
 .count {
   font-size: 0.7em;
   font-weight: 400;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .table-wrap {
