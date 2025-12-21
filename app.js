@@ -179,12 +179,14 @@ function applyFilters() {
     if (!multAll) {
       const activeMultBtn = el.multToggles.querySelector('.area-btn.active:not([data-mult="ALL"])');
       const sel = activeMultBtn?.dataset.mult;
-      if (sel === '10-19') {
-        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 10 && r.multiplier < 20);
-      } else if (sel === '20-29') {
+      if (sel === '20-29') {
         rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 20 && r.multiplier < 30);
-      } else if (sel === '30plus') {
-        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30);
+      } else if (sel === '30-39') {
+        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30 && r.multiplier < 40);
+      } else if (sel === '40-49') {
+        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 40 && r.multiplier < 50);
+      } else if (sel === '50plus') {
+        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 50);
       }
     }
   }
