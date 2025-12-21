@@ -126,8 +126,8 @@ function normalizeRow(row) {
   let multiplier = (total_prize != null && entry_fee && entry_fee > 0)
     ? (total_prize / entry_fee)
     : null;
-  // Invalidate unrealistic multiplier (>= 50)
-  if (multiplier != null && isFinite(multiplier) && multiplier >= 50) {
+  // Invalidate unrealistic multiplier (>= 100)
+  if (multiplier != null && isFinite(multiplier) && multiplier >= 100) {
     multiplier = null;
   }
 
@@ -278,7 +278,8 @@ function render() {
     if (isLateRegistrationPassed) {
       rowClass = 'late-reg-expired';
     } else if (r.multiplier != null && isFinite(r.multiplier)) {
-      if (r.multiplier >= 30) rowClass = 'hl-mult-30plus';
+      if (r.multiplier >= 50) rowClass = 'hl-mult-50plus';
+      else if (r.multiplier >= 30) rowClass = 'hl-mult-30plus';
       else if (r.multiplier >= 20) rowClass = 'hl-mult-20plus';
       else if (r.multiplier >= 10) rowClass = 'hl-mult-10to19';
     }

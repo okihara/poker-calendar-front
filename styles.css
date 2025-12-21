@@ -298,6 +298,12 @@ body {
 .data-table tbody tr.hl-mult-30plus:hover {
   background: rgba(168, 85, 247, 0.38);
 }
+.data-table tbody tr.hl-mult-50plus {
+  background: rgba(239, 68, 68, 0.3); /* vivid red */
+}
+.data-table tbody tr.hl-mult-50plus:hover {
+  background: rgba(239, 68, 68, 0.4);
+}
 
 .badge-link a {
   display: inline-flex;
