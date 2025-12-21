@@ -249,12 +249,9 @@ body {
 }
 .data-table tbody tr.late-reg-expired .title-link {
   color: var(--muted);
-  pointer-events: none;
-  cursor: not-allowed;
 }
 .data-table tbody tr.late-reg-expired .title-link:hover {
-  text-decoration: none;
-  filter: none;
+  text-decoration: underline;
 }
 
 /* Hide late registration expired when toggle is off */
