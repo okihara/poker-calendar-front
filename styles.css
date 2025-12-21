@@ -282,30 +282,32 @@ body {
   background: rgba(239, 68, 68, 0.35);
 }
 
-/* Multiplier-based highlights */
-.data-table tbody tr.hl-mult-10to19 {
-  background: rgba(34, 197, 94, 0.2); /* vivid green */
-}
-.data-table tbody tr.hl-mult-10to19:hover {
-  background: rgba(34, 197, 94, 0.3);
-}
-.data-table tbody tr.hl-mult-20plus {
-  background: rgba(249, 115, 22, 0.25); /* vivid orange */
-}
-.data-table tbody tr.hl-mult-20plus:hover {
-  background: rgba(249, 115, 22, 0.35);
-}
-.data-table tbody tr.hl-mult-30plus {
-  background: rgba(168, 85, 247, 0.28); /* vivid purple */
-}
-.data-table tbody tr.hl-mult-30plus:hover {
-  background: rgba(168, 85, 247, 0.38);
-}
-.data-table tbody tr.hl-mult-50plus {
-  background: rgba(239, 68, 68, 0.3); /* vivid red */
-}
-.data-table tbody tr.hl-mult-50plus:hover {
-  background: rgba(239, 68, 68, 0.4);
+/* Multiplier-based highlights (PC only) */
+@media (min-width: 769px) {
+  .data-table tbody tr.hl-mult-10to19 {
+    background: rgba(34, 197, 94, 0.2); /* vivid green */
+  }
+  .data-table tbody tr.hl-mult-10to19:hover {
+    background: rgba(34, 197, 94, 0.3);
+  }
+  .data-table tbody tr.hl-mult-20plus {
+    background: rgba(249, 115, 22, 0.25); /* vivid orange */
+  }
+  .data-table tbody tr.hl-mult-20plus:hover {
+    background: rgba(249, 115, 22, 0.35);
+  }
+  .data-table tbody tr.hl-mult-30plus {
+    background: rgba(168, 85, 247, 0.28); /* vivid purple */
+  }
+  .data-table tbody tr.hl-mult-30plus:hover {
+    background: rgba(168, 85, 247, 0.38);
+  }
+  .data-table tbody tr.hl-mult-50plus {
+    background: rgba(239, 68, 68, 0.3); /* vivid red */
+  }
+  .data-table tbody tr.hl-mult-50plus:hover {
+    background: rgba(239, 68, 68, 0.4);
+  }
 }
 
 .badge-link a {
