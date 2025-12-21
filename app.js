@@ -11,6 +11,7 @@ const state = {
 // Elements
 const el = {
   status: document.getElementById("status"),
+  count: document.getElementById("count"),
   tbody: document.getElementById("tbody"),
   table: document.getElementById("table"),
   areaToggles: document.getElementById("areaToggles"),
@@ -318,11 +319,24 @@ function render() {
   el.tbody.innerHTML = html;
 }
 
+function updateCount() {
+  const total = state.data.length;
+  const filtered = state.filtered.length;
+  if (el.count) {
+    if (total === filtered) {
+      el.count.textContent = `${total}件`;
+    } else {
+      el.count.textContent = `${filtered}件 / ${total}件`;
+    }
+  }
+}
+
 function update() {
   applyFilters();
   sortRows();
   updateSortIndicator();
   render();
+  updateCount();
   updateURLFromFilters();
 }
 
