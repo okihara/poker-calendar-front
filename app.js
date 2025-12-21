@@ -124,7 +124,9 @@ function normalizeRow(row) {
   const startDT = parseDateTimeJP(row.start_time);
   const lateRegDT = parseDateTimeJP(row.late_registration_time);
   // Multiplier: use total prize sum divided by entry fee
-  let multiplier = (total_prize != null && entry_fee && entry_fee > 0)
+  // Skip calculation for satellite tournaments (title contains "サテ")
+  const isSatellite = row.title && row.title.includes('サテ');
+  let multiplier = (!isSatellite && total_prize != null && entry_fee && entry_fee > 0)
     ? (total_prize / entry_fee)
     : null;
   // Invalidate unrealistic multiplier (>= 100)
