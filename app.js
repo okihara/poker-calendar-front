@@ -162,7 +162,15 @@ function applyFilters() {
   let rows = state.data.slice();
 
   if (!allActive && activeAreas.length > 0) {
-    rows = rows.filter(r => activeAreas.includes((r.area || "").trim()));
+    rows = rows.filter(r => {
+      // 全カラムのどこかにエリア名が含まれていれば真
+      return activeAreas.some(area => {
+        return Object.values(r).some(value => {
+          if (value == null) return false;
+          return String(value).toLowerCase().includes(area.toLowerCase());
+        });
+      });
+    });
   }
 
   // Multiplier filter
@@ -190,26 +198,28 @@ function applyFilters() {
 
       if (activeTitles.length > 0) {
         rows = rows.filter(r => {
-          const title = (r.title || "").toLowerCase();
-          return activeTitles.some(activeTitle =>
-            title.includes(activeTitle.toLowerCase())
-          );
+          // 全カラムのどこかにタイトルキーワードが含まれていれば真
+          return activeTitles.some(activeTitle => {
+            return Object.values(r).some(value => {
+              if (value == null) return false;
+              return String(value).toLowerCase().includes(activeTitle.toLowerCase());
+            });
+          });
         });
       }
     }
   }
 
-  // Search filter (店名・タイトル・エリア)
+  // Search filter (全カラム対象)
   if (el.searchInput) {
     const searchTerm = el.searchInput.value.trim().toLowerCase();
     if (searchTerm) {
       rows = rows.filter(r => {
-        const shopName = (r.shop_name || "").toLowerCase();
-        const title = (r.title || "").toLowerCase();
-        const area = (r.area || "").toLowerCase();
-        return shopName.includes(searchTerm) ||
-               title.includes(searchTerm) ||
-               area.includes(searchTerm);
+        // 全てのカラムの値を検索対象にする
+        return Object.values(r).some(value => {
+          if (value == null) return false;
+          return String(value).toLowerCase().includes(searchTerm);
+        });
       });
     }
   }
