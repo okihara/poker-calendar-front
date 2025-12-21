@@ -421,7 +421,7 @@ async function fetchAndInit() {
   const today = new Date();
   const todayStr = fmtDateJapanese(today);
   const h1 = document.querySelector('.app-header h1');
-  h1.textContent = `ポーカーハウストナメ検索 ${todayStr}`;
+  h1.textContent = `ポーカー トナメ検索 ${todayStr}`;
   
   setStatus("読み込み中...");
   try {
