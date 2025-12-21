@@ -325,11 +325,7 @@ function updateCount() {
   const total = state.data.length;
   const filtered = state.filtered.length;
   if (el.count) {
-    if (total === filtered) {
-      el.count.textContent = `${total}件`;
-    } else {
-      el.count.textContent = `${filtered}件 / ${total}件`;
-    }
+    el.count.textContent = ` トナメ件数: ${filtered} / ${total}`;
   }
 }
 
