@@ -362,10 +362,6 @@ function render() {
                 <span class="mobile-card-label">⏰ レイト</span>
                 <span class="mobile-card-value">${lateStr || "-"}</span>
               </div>
-              <div class="mobile-card-info-row">
-                <span class="mobile-card-label">📍 エリア</span>
-                <span class="mobile-card-value">${r.area || "-"}</span>
-              </div>
             </div>
 
             ${mobileLinkBtn}
