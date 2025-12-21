@@ -380,7 +380,7 @@ function updateCount() {
   const total = state.data.length;
   const filtered = state.filtered.length;
   if (el.count) {
-    el.count.textContent = ` 登録数: ${filtered} / ${total}`;
+    el.count.textContent = ` ${filtered} / ${total}`;
   }
 }
 
@@ -417,13 +417,11 @@ function debounce(fn, wait = 250) {
 }
 
 async function fetchAndInit() {
-  // Update page title with current date (preserve count span)
+  // Update page title with current date
   const today = new Date();
   const todayStr = fmtDateJapanese(today);
   const h1 = document.querySelector('.app-header h1');
-  const countSpan = h1.querySelector('#count');
-  h1.innerHTML = `ポーカーハウストナメ検索 ${todayStr} `;
-  h1.appendChild(countSpan);
+  h1.textContent = `ポーカーハウストナメ検索 ${todayStr}`;
   
   setStatus("読み込み中...");
   try {
