@@ -239,6 +239,16 @@ body {
   filter: brightness(1.1);
 }
 
+/* Shop name link styles */
+.shop-name-link {
+  cursor: pointer;
+  color: var(--accent);
+  text-decoration: none;
+}
+.shop-name-link:hover {
+  text-decoration: underline;
+}
+
 /* Late registration expired styles */
 .data-table tbody tr.late-reg-expired {
   opacity: 0.6;

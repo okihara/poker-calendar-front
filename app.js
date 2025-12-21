@@ -283,7 +283,7 @@ function render() {
     const feeStr = r.entry_fee != null ? r.entry_fee.toLocaleString() : "";
     const addOnStr = r.add_on != null ? r.add_on.toLocaleString() : "";
     const totalPrizeStr = r.total_prize != null ? r.total_prize.toLocaleString() : "";
-    const multStr = (r.multiplier != null && isFinite(r.multiplier)) ? `x${(Math.round(r.multiplier * 10) / 10).toFixed(1)}` : "";
+    const multStr = (r.multiplier != null && isFinite(r.multiplier) && r.multiplier > 0) ? `x${(Math.round(r.multiplier * 10) / 10).toFixed(1)}` : "";
 
     // Check if late registration time has passed
     const isLateRegistrationPassed = r.late_reg_dt && r.late_reg_dt < now;
@@ -306,7 +306,7 @@ function render() {
     const mobileDateStr = r.date_only ? `${r.date_only.getMonth() + 1}月${r.date_only.getDate()}日` : "";
 
     // 倍率バッジ（右上に大きく表示）
-    const multBadgeText = (r.multiplier != null && isFinite(r.multiplier)) ? `x${Math.round(r.multiplier)}` : '';
+    const multBadgeText = (r.multiplier != null && isFinite(r.multiplier) && r.multiplier > 0) ? `x${Math.round(r.multiplier)}` : '';
     const multBadgeClass = isLateRegistrationPassed ? 'mult-badge-ended' :
       (r.multiplier >= 50 ? 'mult-badge-50plus' :
        r.multiplier >= 30 ? 'mult-badge-30plus' :
@@ -325,7 +325,7 @@ function render() {
         <td class="pc-only" data-label="開始">${startStr}</td>
         <td class="pc-only" data-label="レイト">${lateStr}</td>
         <td class="pc-only" data-label="エリア">${r.area || ""}</td>
-        <td class="pc-only" data-label="店名">${r.shop_name || ""}</td>
+        <td class="pc-only" data-label="店名"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></td>
         <td class="pc-only" data-label="タイトル">${titleContent}</td>
         <td class="pc-only number" data-label="参加費">${feeStr}</td>
         <td class="pc-only number" data-label="アドオン">${addOnStr}</td>
@@ -340,7 +340,7 @@ function render() {
               <h3 class="mobile-card-title">${r.title || "タイトルなし"}</h3>
               ${multBadgeText ? `<span class="mobile-mult-badge ${multBadgeClass}">${multBadgeText}</span>` : ''}
             </div>
-            <p class="mobile-card-shop">${r.shop_name || ""}</p>
+            <p class="mobile-card-shop"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></p>
 
             <div class="mobile-card-grid">
               <div class="mobile-card-item">
@@ -700,6 +700,20 @@ function bindEvents() {
       el.searchInput.focus();
     });
   }
+
+  // 店名クリックで検索
+  el.tbody.addEventListener('click', (e) => {
+    const shopLink = e.target.closest('.shop-name-link');
+    if (!shopLink) return;
+    const shopName = shopLink.dataset.shop;
+    if (shopName && el.searchInput) {
+      el.searchInput.value = shopName;
+      if (clearSearchBtn) {
+        clearSearchBtn.style.display = 'flex';
+      }
+      update();
+    }
+  });
 
   // URLクエリパラメータからフィルター状態を読み込む
   loadFiltersFromURL();
