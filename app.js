@@ -366,10 +366,13 @@ function debounce(fn, wait = 250) {
 }
 
 async function fetchAndInit() {
-  // Update page title with current date
+  // Update page title with current date (preserve count span)
   const today = new Date();
   const todayStr = fmtDateJapanese(today);
-  document.querySelector('.app-header h1').textContent = `🃏今日のポーカートーナメント ${todayStr}`;
+  const h1 = document.querySelector('.app-header h1');
+  const countSpan = h1.querySelector('#count');
+  h1.innerHTML = `🃏今日のポーカートーナメント ${todayStr} `;
+  h1.appendChild(countSpan);
   
   setStatus("読み込み中...");
   try {
