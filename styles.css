@@ -285,28 +285,28 @@ body {
 /* Multiplier-based highlights (PC only) */
 @media (min-width: 769px) {
   .data-table tbody tr.hl-mult-10to19 {
-    background: rgba(34, 197, 94, 0.2); /* vivid green */
+    background: rgba(34, 197, 94, 0.4);
   }
   .data-table tbody tr.hl-mult-10to19:hover {
-    background: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.5);
   }
   .data-table tbody tr.hl-mult-20plus {
-    background: rgba(249, 115, 22, 0.25); /* vivid orange */
+    background: rgba(249, 115, 22, 0.4);
   }
   .data-table tbody tr.hl-mult-20plus:hover {
-    background: rgba(249, 115, 22, 0.35);
+    background: rgba(249, 115, 22, 0.5);
   }
   .data-table tbody tr.hl-mult-30plus {
-    background: rgba(168, 85, 247, 0.28); /* vivid purple */
+    background: rgba(168, 85, 247, 0.4);
   }
   .data-table tbody tr.hl-mult-30plus:hover {
-    background: rgba(168, 85, 247, 0.38);
+    background: rgba(168, 85, 247, 0.5);
   }
   .data-table tbody tr.hl-mult-50plus {
-    background: rgba(239, 68, 68, 0.3); /* vivid red */
+    background: rgba(239, 68, 68, 0.4);
   }
   .data-table tbody tr.hl-mult-50plus:hover {
-    background: rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.5);
   }
 }
 
