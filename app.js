@@ -283,12 +283,11 @@ function render() {
     const feeStr = r.entry_fee != null ? r.entry_fee.toLocaleString() : "";
     const addOnStr = r.add_on != null ? r.add_on.toLocaleString() : "";
     const totalPrizeStr = r.total_prize != null ? r.total_prize.toLocaleString() : "";
-    const multStr = (r.multiplier != null && isFinite(r.multiplier)) ? `${(Math.round(r.multiplier * 10) / 10).toFixed(1)}x` : "";
-    
+    const multStr = (r.multiplier != null && isFinite(r.multiplier)) ? `x${(Math.round(r.multiplier * 10) / 10).toFixed(1)}` : "";
+
     // Check if late registration time has passed
-    console.log(r, now);
     const isLateRegistrationPassed = r.late_reg_dt && r.late_reg_dt < now;
-    
+
     let rowClass = '';
     if (isLateRegistrationPassed) {
       rowClass = 'late-reg-expired';
@@ -299,23 +298,79 @@ function render() {
       else if (r.multiplier >= 10) rowClass = 'hl-mult-10to19';
     }
 
-    const titleContent = r.link ? 
-      `<a href="${r.link}" class="title-link">${r.title || ""}</a>` : 
+    const titleContent = r.link ?
+      `<a href="${r.link}" class="title-link">${r.title || ""}</a>` :
       (r.title || "");
+
+    // 日付表示（スマホ用）
+    const mobileDateStr = r.date_only ? `${r.date_only.getMonth() + 1}月${r.date_only.getDate()}日` : "";
+
+    // 倍率バッジ（右上に大きく表示）
+    const multBadgeText = (r.multiplier != null && isFinite(r.multiplier)) ? `x${Math.round(r.multiplier)}` : '';
+    const multBadgeClass = isLateRegistrationPassed ? 'mult-badge-ended' :
+      (r.multiplier >= 50 ? 'mult-badge-50plus' :
+       r.multiplier >= 30 ? 'mult-badge-30plus' :
+       r.multiplier >= 20 ? 'mult-badge-20plus' :
+       r.multiplier >= 10 ? 'mult-badge-10plus' : '');
+
+    // リンクボタン（スマホ用）
+    const mobileLinkBtn = r.link ?
+      `<a href="${r.link}" class="mobile-link-btn">詳細を見る</a>` :
+      `<span class="mobile-link-btn mobile-link-btn-disabled">リンクなし</span>`;
 
     return `
       <tr class="${rowClass}">
-        <td data-label="開催日">${dateStr}</td>
-        <td data-label="開始">${startStr}</td>
-        <td data-label="レイト">${lateStr}</td>
-        <td data-label="エリア">${r.area || ""}</td>
-        <td data-label="店名">${r.shop_name || ""}</td>
-        <td data-label="タイトル">${titleContent}</td>
-        <td class="number" data-label="参加費">${feeStr}</td>
-        <td class="number" data-label="アドオン">${addOnStr}</td>
-        <td class="number" data-label="プライズ総額">${totalPrizeStr}</td>
-        <td class="number" data-label="倍率">${multStr}</td>
-        <td class="prize-text" data-label="プライズ概要">${(r.prize_text || "").toString().replace(/\n+/g, ' / ')}</td>
+        <!-- PC用テーブル列 -->
+        <td class="pc-only" data-label="開催日">${dateStr}</td>
+        <td class="pc-only" data-label="開始">${startStr}</td>
+        <td class="pc-only" data-label="レイト">${lateStr}</td>
+        <td class="pc-only" data-label="エリア">${r.area || ""}</td>
+        <td class="pc-only" data-label="店名">${r.shop_name || ""}</td>
+        <td class="pc-only" data-label="タイトル">${titleContent}</td>
+        <td class="pc-only number" data-label="参加費">${feeStr}</td>
+        <td class="pc-only number" data-label="アドオン">${addOnStr}</td>
+        <td class="pc-only number" data-label="プライズ総額">${totalPrizeStr}</td>
+        <td class="pc-only number" data-label="倍率">${multStr}</td>
+        <td class="pc-only prize-text" data-label="プライズ概要">${(r.prize_text || "").toString().replace(/\n+/g, ' / ')}</td>
+
+        <!-- スマホ用カード -->
+        <td class="mobile-card-cell">
+          <div class="mobile-card">
+            <div class="mobile-card-header">
+              <h3 class="mobile-card-title">${r.title || "タイトルなし"}</h3>
+              ${multBadgeText ? `<span class="mobile-mult-badge ${multBadgeClass}">${multBadgeText}</span>` : ''}
+            </div>
+            <p class="mobile-card-shop">${r.shop_name || ""}</p>
+
+            <div class="mobile-card-grid">
+              <div class="mobile-card-item">
+                <span class="mobile-card-label">💰 参加費</span>
+                <span class="mobile-card-value">¥${feeStr || "-"}</span>
+              </div>
+              <div class="mobile-card-item">
+                <span class="mobile-card-label">🏆 プライズ合計</span>
+                <span class="mobile-card-value">¥${totalPrizeStr || "-"}</span>
+              </div>
+            </div>
+
+            <div class="mobile-card-info">
+              <div class="mobile-card-info-row">
+                <span class="mobile-card-label">📅 開始時間</span>
+                <span class="mobile-card-value">${mobileDateStr} ${startStr}</span>
+              </div>
+              <div class="mobile-card-info-row">
+                <span class="mobile-card-label">⏰ レイト</span>
+                <span class="mobile-card-value">${lateStr || "-"}</span>
+              </div>
+              <div class="mobile-card-info-row">
+                <span class="mobile-card-label">📍 エリア</span>
+                <span class="mobile-card-value">${r.area || "-"}</span>
+              </div>
+            </div>
+
+            ${mobileLinkBtn}
+          </div>
+        </td>
       </tr>`;
   }).join("");
   el.tbody.innerHTML = html;
