@@ -660,6 +660,20 @@ function bindEvents() {
       } else {
         table.classList.add('hide-late-expired');
       }
+      updateURLFromFilters();
+    });
+  }
+
+  // Bind sort by multiplier toggle
+  const sortByMultiplierCheckbox = document.getElementById('sortByMultiplier');
+  if (sortByMultiplierCheckbox) {
+    sortByMultiplierCheckbox.addEventListener('change', () => {
+      if (sortByMultiplierCheckbox.checked) {
+        state.sort = { key: 'multiplier', dir: 'desc' };
+      } else {
+        state.sort = { key: 'start_time', dir: 'asc' };
+      }
+      update();
     });
   }
 

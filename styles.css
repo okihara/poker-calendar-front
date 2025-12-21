@@ -291,10 +291,10 @@ body {
     background: rgba(34, 197, 94, 0.5);
   }
   .data-table tbody tr.hl-mult-20plus {
-    background: rgba(249, 115, 22, 0.4);
+    background: rgba(59, 130, 246, 0.4);
   }
   .data-table tbody tr.hl-mult-20plus:hover {
-    background: rgba(249, 115, 22, 0.5);
+    background: rgba(59, 130, 246, 0.5);
   }
   .data-table tbody tr.hl-mult-30plus {
     background: rgba(168, 85, 247, 0.4);
@@ -414,7 +414,7 @@ body {
   }
 
   .mobile-mult-badge.mult-badge-20plus {
-    color: #f97316;
+    color: #3b82f6;
   }
 
   .mobile-mult-badge.mult-badge-30plus {
@@ -530,7 +530,7 @@ body {
   }
 
   .data-table tbody tr.hl-mult-20plus .mobile-card {
-    border-left: 8px solid #f97316;
+    border-left: 8px solid #3b82f6;
   }
 
   .data-table tbody tr.hl-mult-30plus .mobile-card {
