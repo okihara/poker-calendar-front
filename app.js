@@ -150,8 +150,12 @@ function normalizeRow(row) {
   };
 }
 
-function setStatus(msg) {
-  el.status.textContent = msg || "";
+function setStatus(msg, showSpinner = false) {
+  if (showSpinner) {
+    el.status.innerHTML = `<div class="spinner"></div><span>${msg}</span>`;
+  } else {
+    el.status.textContent = msg || "";
+  }
 }
 
 // area toggles: buttons with .area-btn.active represent enabled filters
@@ -419,7 +423,7 @@ async function fetchAndInit() {
   const h1 = document.querySelector('.app-header h1');
   h1.textContent = `ポーカー トナメ検索 ${todayStr}`;
   
-  setStatus("読み込み中...");
+  setStatus("読み込み中...", true);
   try {
     await new Promise((resolve, reject) => {
       Papa.parse(CSV_URL, {
