@@ -74,7 +74,7 @@ body {
 .search-input {
   width: 100%;
   padding: 10px 40px 10px 16px;
-  font-size: 14px;
+  font-size: 16px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: #ffffff;
