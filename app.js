@@ -286,7 +286,7 @@ function render() {
     const lateStr = r.late_reg_dt ? `${fmtTime(r.late_reg_dt)}` : (r.late_registration_time || "");
     const feeStr = r.entry_fee != null ? r.entry_fee.toLocaleString() : "";
     const addOnStr = r.add_on != null ? r.add_on.toLocaleString() : "";
-    const totalPrizeStr = r.total_prize != null ? r.total_prize.toLocaleString() : "";
+    const totalPrizeStr = r.total_prize != null && r.total_prize > 0 ? r.total_prize.toLocaleString() : "不明";
     const multStr = (r.multiplier != null && isFinite(r.multiplier) && r.multiplier > 0) ? `x${(Math.round(r.multiplier * 10) / 10).toFixed(1)}` : "";
 
     // Check if late registration time has passed
@@ -353,7 +353,7 @@ function render() {
               </div>
               <div class="mobile-card-item">
                 <span class="mobile-card-label">🏆 プライズ合計</span>
-                <span class="mobile-card-value">¥${totalPrizeStr || "-"}</span>
+                <span class="mobile-card-value">${totalPrizeStr === "不明" ? "不明" : `¥${totalPrizeStr}`}</span>
               </div>
             </div>
 
