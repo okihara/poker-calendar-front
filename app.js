@@ -123,11 +123,12 @@ function normalizeRow(row) {
   const dateOnly = parseDateTimeJP(row.date);
   const startDT = parseDateTimeJP(row.start_time);
   const lateRegDT = parseDateTimeJP(row.late_registration_time);
-  // Multiplier: use total prize sum divided by entry fee
+  // Multiplier: use total prize sum divided by (entry fee + add_on)
   // Skip calculation for satellite tournaments (title contains "サテ")
   const isSatellite = row.title && row.title.includes('サテ');
-  let multiplier = (!isSatellite && total_prize != null && entry_fee && entry_fee > 0)
-    ? (total_prize / entry_fee)
+  const totalCost = (entry_fee || 0) + (add_on || 0);
+  let multiplier = (!isSatellite && total_prize != null && totalCost > 0)
+    ? (total_prize / totalCost)
     : null;
   // Invalidate unrealistic multiplier (>= 100)
   if (multiplier != null && isFinite(multiplier) && multiplier >= 100) {
@@ -349,7 +350,7 @@ function render() {
             <div class="mobile-card-grid">
               <div class="mobile-card-item">
                 <span class="mobile-card-label">💰 参加費</span>
-                <span class="mobile-card-value">¥${feeStr || "-"}</span>
+                <span class="mobile-card-value">¥${feeStr || "-"}${addOnStr ? ` (Add-on: ${addOnStr})` : ''}</span>
               </div>
               <div class="mobile-card-item">
                 <span class="mobile-card-label">🏆 プライズ合計</span>
