@@ -108,7 +108,7 @@ function fmtDateJapanese(d) {
   const m = d.getMonth() + 1;
   const day = d.getDate();
   const weekday = weekdays[d.getDay()];
-  return `${m}/${day}(${weekday})`;
+  return `${m}月${day}日(${weekday})`;
 }
 
 function normalizeRow(row) {
