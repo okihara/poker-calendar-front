@@ -498,6 +498,16 @@ async function fetchAndInit() {
 function loadFiltersFromURL() {
   const params = new URLSearchParams(window.location.search);
 
+  // 日付 (today / tomorrow)
+  const date = params.get('date');
+  if (date && el.dateToggles) {
+    const targetTab = el.dateToggles.querySelector(`.date-tab[data-date="${date}"]`);
+    if (targetTab) {
+      el.dateToggles.querySelectorAll('.date-tab').forEach(b => b.classList.remove('active'));
+      targetTab.classList.add('active');
+    }
+  }
+
   // エリア
   const area = params.get('area');
   if (area && el.areaToggles) {
@@ -557,6 +567,14 @@ function loadFiltersFromURL() {
 // 現在のフィルター状態をURLクエリパラメータに反映する
 function updateURLFromFilters() {
   const params = new URLSearchParams();
+
+  // 日付 (today / tomorrow) - デフォルト(today)以外の場合のみ設定
+  if (el.dateToggles) {
+    const activeDateTab = el.dateToggles.querySelector('.date-tab.active');
+    if (activeDateTab && activeDateTab.dataset.date === 'tomorrow') {
+      params.set('date', 'tomorrow');
+    }
+  }
 
   // エリア
   if (el.areaToggles) {
