@@ -11,15 +11,15 @@
 </head>
 <body>
   <header class="app-header">
-    <h1></h1>
+    <h1>ポーカー トナメ検索</h1>
+    <div class="date-tabs" id="dateToggles">
+      <button type="button" class="date-tab active" data-date="today">今日</button>
+      <button type="button" class="date-tab" data-date="tomorrow">明日</button>
+    </div>
   </header>
 
   <section class="controls">
-    <div class="area-toggle-group" id="dateToggles" aria-label="日付フィルター">
-      <button type="button" class="area-btn active" data-date="today">今日</button>
-      <button type="button" class="area-btn" data-date="tomorrow">明日</button>
-    </div>
-    <div class="area-toggle-group" id="areaToggles" aria-label="エリアフィルター" style="margin-top:8px;">
+    <div class="area-toggle-group" id="areaToggles" aria-label="エリアフィルター">
       <button type="button" class="area-btn active" data-area="ALL">ALL</button>
       <button type="button" class="area-btn" data-area="六本木">六本木</button>
       <button type="button" class="area-btn" data-area="渋谷">渋谷</button>

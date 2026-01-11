@@ -20,18 +20,41 @@ body {
 
 .app-header {
   background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  padding: 20px 16px;
+  padding: 16px 16px 0;
   color: #ffffff;
 }
 .app-header h1 {
-  margin: 0;
-  font-size: 22px;
+  margin: 0 0 12px 0;
+  font-size: 18px;
   color: #ffffff;
 }
-.app-header .subtitle {
-  margin: 0;
+.date-tabs {
+  display: flex;
+  gap: 0;
+}
+.date-tab {
+  appearance: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.8);
-  font-size: 13px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.date-tab:first-child {
+  border-radius: 8px 0 0 0;
+}
+.date-tab:last-child {
+  border-radius: 0 8px 0 0;
+}
+.date-tab.active {
+  background: var(--bg);
+  color: var(--text);
+}
+.date-tab:not(.active):hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .controls {

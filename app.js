@@ -178,7 +178,7 @@ function applyFilters() {
 
   // Date filter (today / tomorrow)
   if (el.dateToggles) {
-    const activeDateBtn = el.dateToggles.querySelector('.area-btn.active');
+    const activeDateBtn = el.dateToggles.querySelector('.date-tab.active');
     const selectedDate = activeDateBtn?.dataset.date || 'today';
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -453,21 +453,19 @@ function debounce(fn, wait = 250) {
   };
 }
 
-function updateHeaderTitle() {
-  const h1 = document.querySelector('.app-header h1');
-  const activeDateBtn = el.dateToggles?.querySelector('.area-btn.active');
-  const selectedDate = activeDateBtn?.dataset.date || 'today';
+function updateDateTabs() {
+  if (!el.dateToggles) return;
   const today = new Date();
-  const targetDate = selectedDate === 'tomorrow'
-    ? new Date(today.getTime() + 24 * 60 * 60 * 1000)
-    : today;
-  const dateStr = fmtDateJapanese(targetDate);
-  h1.textContent = `ポーカー トナメ検索 ${dateStr}`;
+  const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+  const todayTab = el.dateToggles.querySelector('.date-tab[data-date="today"]');
+  const tomorrowTab = el.dateToggles.querySelector('.date-tab[data-date="tomorrow"]');
+  if (todayTab) todayTab.textContent = `今日 ${fmtDateJapanese(today)}`;
+  if (tomorrowTab) tomorrowTab.textContent = `明日 ${fmtDateJapanese(tomorrow)}`;
 }
 
 async function fetchAndInit() {
-  // Update page title with current date
-  updateHeaderTitle();
+  // Update date tabs with actual dates
+  updateDateTabs();
   
   setStatus("読み込み中...", true);
   try {
@@ -605,15 +603,14 @@ function updateURLFromFilters() {
 function bindEvents() {
   el.table.addEventListener("click", onHeaderClick);
 
-  // Bind date toggles (today / tomorrow)
+  // Bind date tabs (today / tomorrow)
   if (el.dateToggles) {
     el.dateToggles.addEventListener('click', (e) => {
-      const btn = e.target.closest('.area-btn');
+      const btn = e.target.closest('.date-tab');
       if (!btn) return;
       // Toggle between today and tomorrow (mutually exclusive)
-      el.dateToggles.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+      el.dateToggles.querySelectorAll('.date-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      updateHeaderTitle();
       update();
     });
   }
