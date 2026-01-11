@@ -27,6 +27,12 @@ body {
   margin: 0 0 12px 0;
   font-size: 18px;
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.app-header h1 .material-symbols-outlined {
+  font-size: 22px;
 }
 .date-tabs {
   display: flex;
