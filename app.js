@@ -459,8 +459,8 @@ function updateDateTabs() {
   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
   const todayTab = el.dateToggles.querySelector('.date-tab[data-date="today"]');
   const tomorrowTab = el.dateToggles.querySelector('.date-tab[data-date="tomorrow"]');
-  if (todayTab) todayTab.textContent = `今日 ${fmtDateJapanese(today)}`;
-  if (tomorrowTab) tomorrowTab.textContent = `明日 ${fmtDateJapanese(tomorrow)}`;
+  if (todayTab) todayTab.textContent = `${fmtDateJapanese(today)}`;
+  if (tomorrowTab) tomorrowTab.textContent = `${fmtDateJapanese(tomorrow)}`;
 }
 
 async function fetchAndInit() {
