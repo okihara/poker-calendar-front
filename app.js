@@ -8,17 +8,29 @@ const state = {
   sort: { key: "start_time", dir: "asc" },
 };
 
-// Elements
+// Elements (initialized after DOM ready)
 const el = {
-  status: document.getElementById("status"),
-  count: document.getElementById("count"),
-  tbody: document.getElementById("tbody"),
-  table: document.getElementById("table"),
-  areaToggles: document.getElementById("areaToggles"),
-  multToggles: document.getElementById("multToggles"),
-  titleToggles: document.getElementById("titleToggles"),
-  searchInput: null, // Will be initialized in bindEvents
+  status: null,
+  count: null,
+  tbody: null,
+  table: null,
+  dateToggles: null,
+  areaToggles: null,
+  multToggles: null,
+  titleToggles: null,
+  searchInput: null,
 };
+
+function initElements() {
+  el.status = document.getElementById("status");
+  el.count = document.getElementById("count");
+  el.tbody = document.getElementById("tbody");
+  el.table = document.getElementById("table");
+  el.dateToggles = document.getElementById("dateToggles");
+  el.areaToggles = document.getElementById("areaToggles");
+  el.multToggles = document.getElementById("multToggles");
+  el.titleToggles = document.getElementById("titleToggles");
+}
 
 function parseIntSafe(v) {
   if (v == null) return null;
@@ -162,12 +174,36 @@ function setStatus(msg, showSpinner = false) {
 // area toggles: buttons with .area-btn.active represent enabled filters
 
 function applyFilters() {
+  let rows = state.data.slice();
+
+  // Date filter (today / tomorrow)
+  if (el.dateToggles) {
+    const activeDateBtn = el.dateToggles.querySelector('.area-btn.active');
+    const selectedDate = activeDateBtn?.dataset.date || 'today';
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrowStart = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
+
+    if (selectedDate === 'today') {
+      rows = rows.filter(r => {
+        if (!r.date_only) return false;
+        const rowDate = new Date(r.date_only.getFullYear(), r.date_only.getMonth(), r.date_only.getDate());
+        return rowDate.getTime() === todayStart.getTime();
+      });
+    } else if (selectedDate === 'tomorrow') {
+      rows = rows.filter(r => {
+        if (!r.date_only) return false;
+        const rowDate = new Date(r.date_only.getFullYear(), r.date_only.getMonth(), r.date_only.getDate());
+        return rowDate.getTime() === tomorrowStart.getTime();
+      });
+    }
+  }
+
   // Area filter
   const allActive = !!el.areaToggles?.querySelector('.area-btn[data-area="ALL"].active');
   const activeAreas = Array.from(el.areaToggles?.querySelectorAll('.area-btn.active') || [])
     .map(b => b.dataset.area)
     .filter(a => !!a && a !== 'ALL');
-  let rows = state.data.slice();
 
   if (!allActive && activeAreas.length > 0) {
     rows = rows.filter(r => {
@@ -417,12 +453,21 @@ function debounce(fn, wait = 250) {
   };
 }
 
+function updateHeaderTitle() {
+  const h1 = document.querySelector('.app-header h1');
+  const activeDateBtn = el.dateToggles?.querySelector('.area-btn.active');
+  const selectedDate = activeDateBtn?.dataset.date || 'today';
+  const today = new Date();
+  const targetDate = selectedDate === 'tomorrow'
+    ? new Date(today.getTime() + 24 * 60 * 60 * 1000)
+    : today;
+  const dateStr = fmtDateJapanese(targetDate);
+  h1.textContent = `ポーカー トナメ検索 ${dateStr}`;
+}
+
 async function fetchAndInit() {
   // Update page title with current date
-  const today = new Date();
-  const todayStr = fmtDateJapanese(today);
-  const h1 = document.querySelector('.app-header h1');
-  h1.textContent = `ポーカー トナメ検索 ${todayStr}`;
+  updateHeaderTitle();
   
   setStatus("読み込み中...", true);
   try {
@@ -559,6 +604,20 @@ function updateURLFromFilters() {
 
 function bindEvents() {
   el.table.addEventListener("click", onHeaderClick);
+
+  // Bind date toggles (today / tomorrow)
+  if (el.dateToggles) {
+    el.dateToggles.addEventListener('click', (e) => {
+      const btn = e.target.closest('.area-btn');
+      if (!btn) return;
+      // Toggle between today and tomorrow (mutually exclusive)
+      el.dateToggles.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateHeaderTitle();
+      update();
+    });
+  }
+
   if (el.areaToggles) {
     el.areaToggles.addEventListener('click', (e) => {
       const btn = e.target.closest('.area-btn');
@@ -718,5 +777,7 @@ function bindEvents() {
   loadFiltersFromURL();
 }
 
+// Initialize
+initElements();
 bindEvents();
 fetchAndInit();
