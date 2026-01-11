@@ -70,7 +70,7 @@ body {
   border: 1px solid var(--border);
   background: #ffffff;
   color: var(--text);
-  border-radius: 999px;
+  border-radius: 6px;
   padding: 8px 14px;
   font-weight: 600;
   letter-spacing: 0.2px;

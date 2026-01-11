@@ -200,12 +200,11 @@ function applyFilters() {
   }
 
   // Area filter
-  const allActive = !!el.areaToggles?.querySelector('.area-btn[data-area="ALL"].active');
   const activeAreas = Array.from(el.areaToggles?.querySelectorAll('.area-btn.active') || [])
     .map(b => b.dataset.area)
-    .filter(a => !!a && a !== 'ALL');
+    .filter(a => !!a);
 
-  if (!allActive && activeAreas.length > 0) {
+  if (activeAreas.length > 0) {
     rows = rows.filter(r => {
       // 全カラムのどこかにエリア名が含まれていれば真
       return activeAreas.some(area => {
@@ -219,40 +218,34 @@ function applyFilters() {
 
   // Multiplier filter
   if (el.multToggles) {
-    const multAll = !!el.multToggles.querySelector('.area-btn[data-mult="ALL"].active');
-    if (!multAll) {
-      const activeMultBtn = el.multToggles.querySelector('.area-btn.active:not([data-mult="ALL"])');
-      const sel = activeMultBtn?.dataset.mult;
-      if (sel === '20-29') {
-        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 20 && r.multiplier < 30);
-      } else if (sel === '30-39') {
-        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30 && r.multiplier < 40);
-      } else if (sel === '40-49') {
-        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 40 && r.multiplier < 50);
-      } else if (sel === '50plus') {
-        rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 50);
-      }
+    const activeMultBtn = el.multToggles.querySelector('.area-btn.active');
+    const sel = activeMultBtn?.dataset.mult;
+    if (sel === '20-29') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 20 && r.multiplier < 30);
+    } else if (sel === '30-39') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30 && r.multiplier < 40);
+    } else if (sel === '40-49') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 40 && r.multiplier < 50);
+    } else if (sel === '50plus') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 50);
     }
   }
 
   // Title filter
   if (el.titleToggles) {
-    const titleAll = !!el.titleToggles.querySelector('.area-btn[data-title="ALL"].active');
-    if (!titleAll) {
-      const activeTitleBtns = Array.from(el.titleToggles.querySelectorAll('.area-btn.active:not([data-title="ALL"])') || []);
-      const activeTitles = activeTitleBtns.map(b => b.dataset.title).filter(t => !!t);
+    const activeTitleBtns = Array.from(el.titleToggles.querySelectorAll('.area-btn.active') || []);
+    const activeTitles = activeTitleBtns.map(b => b.dataset.title).filter(t => !!t);
 
-      if (activeTitles.length > 0) {
-        rows = rows.filter(r => {
-          // 全カラムのどこかにタイトルキーワードが含まれていれば真
-          return activeTitles.some(activeTitle => {
-            return Object.values(r).some(value => {
-              if (value == null) return false;
-              return String(value).toLowerCase().includes(activeTitle.toLowerCase());
-            });
+    if (activeTitles.length > 0) {
+      rows = rows.filter(r => {
+        // 全カラムのどこかにタイトルキーワードが含まれていれば真
+        return activeTitles.some(activeTitle => {
+          return Object.values(r).some(value => {
+            if (value == null) return false;
+            return String(value).toLowerCase().includes(activeTitle.toLowerCase());
           });
         });
-      }
+      });
     }
   }
 
@@ -511,11 +504,8 @@ function loadFiltersFromURL() {
   // エリア
   const area = params.get('area');
   if (area && el.areaToggles) {
-    const allBtn = el.areaToggles.querySelector('.area-btn[data-area="ALL"]');
     const targetBtn = el.areaToggles.querySelector(`.area-btn[data-area="${area}"]`);
-    if (targetBtn && area !== 'ALL') {
-      allBtn?.classList.remove('active');
-      el.areaToggles.querySelectorAll('.area-btn:not([data-area="ALL"])').forEach(b => b.classList.remove('active'));
+    if (targetBtn) {
       targetBtn.classList.add('active');
     }
   }
@@ -523,11 +513,8 @@ function loadFiltersFromURL() {
   // 倍率
   const mult = params.get('mult');
   if (mult && el.multToggles) {
-    const allBtn = el.multToggles.querySelector('.area-btn[data-mult="ALL"]');
     const targetBtn = el.multToggles.querySelector(`.area-btn[data-mult="${mult}"]`);
-    if (targetBtn && mult !== 'ALL') {
-      allBtn?.classList.remove('active');
-      el.multToggles.querySelectorAll('.area-btn:not([data-mult="ALL"])').forEach(b => b.classList.remove('active'));
+    if (targetBtn) {
       targetBtn.classList.add('active');
     }
   }
@@ -535,11 +522,8 @@ function loadFiltersFromURL() {
   // タイトル
   const title = params.get('title');
   if (title && el.titleToggles) {
-    const allBtn = el.titleToggles.querySelector('.area-btn[data-title="ALL"]');
     const targetBtn = el.titleToggles.querySelector(`.area-btn[data-title="${title}"]`);
-    if (targetBtn && title !== 'ALL') {
-      allBtn?.classList.remove('active');
-      el.titleToggles.querySelectorAll('.area-btn:not([data-title="ALL"])').forEach(b => b.classList.remove('active'));
+    if (targetBtn) {
       targetBtn.classList.add('active');
     }
   }
@@ -578,7 +562,7 @@ function updateURLFromFilters() {
 
   // エリア
   if (el.areaToggles) {
-    const activeAreaBtn = el.areaToggles.querySelector('.area-btn.active:not([data-area="ALL"])');
+    const activeAreaBtn = el.areaToggles.querySelector('.area-btn.active');
     if (activeAreaBtn) {
       params.set('area', activeAreaBtn.dataset.area);
     }
@@ -586,7 +570,7 @@ function updateURLFromFilters() {
 
   // 倍率
   if (el.multToggles) {
-    const activeMultBtn = el.multToggles.querySelector('.area-btn.active:not([data-mult="ALL"])');
+    const activeMultBtn = el.multToggles.querySelector('.area-btn.active');
     if (activeMultBtn) {
       params.set('mult', activeMultBtn.dataset.mult);
     }
@@ -594,7 +578,7 @@ function updateURLFromFilters() {
 
   // タイトル
   if (el.titleToggles) {
-    const activeTitleBtn = el.titleToggles.querySelector('.area-btn.active:not([data-title="ALL"])');
+    const activeTitleBtn = el.titleToggles.querySelector('.area-btn.active');
     if (activeTitleBtn) {
       params.set('title', activeTitleBtn.dataset.title);
     }
@@ -637,28 +621,11 @@ function bindEvents() {
     el.areaToggles.addEventListener('click', (e) => {
       const btn = e.target.closest('.area-btn');
       if (!btn) return;
-      const area = btn.dataset.area;
-      const allBtn = el.areaToggles.querySelector('.area-btn[data-area="ALL"]');
-
-      if (area === 'ALL') {
-        // Activate ALL and deactivate others
-        allBtn.classList.add('active');
-        el.areaToggles.querySelectorAll('.area-btn').forEach(b => {
-          if (b !== allBtn) b.classList.remove('active');
-        });
-      } else {
-        // Mutually exclusive: only one specific area at a time
-        const isActive = btn.classList.contains('active');
-        if (isActive) {
-          // If clicking the already active area, revert to ALL
-          btn.classList.remove('active');
-          allBtn.classList.add('active');
-        } else {
-          // Activate this area, deactivate other specific areas and ALL
-          el.areaToggles.querySelectorAll('.area-btn:not([data-area="ALL"])').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          allBtn.classList.remove('active');
-        }
+      // Toggle: クリックでactive切り替え（排他的に1つだけ）
+      const isActive = btn.classList.contains('active');
+      el.areaToggles.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+      if (!isActive) {
+        btn.classList.add('active');
       }
       update();
     });
@@ -668,24 +635,11 @@ function bindEvents() {
     el.multToggles.addEventListener('click', (e) => {
       const btn = e.target.closest('.area-btn');
       if (!btn) return;
-      const mult = btn.dataset.mult;
-      const allBtn = el.multToggles.querySelector('.area-btn[data-mult="ALL"]');
-
-      if (mult === 'ALL') {
-        allBtn.classList.add('active');
-        el.multToggles.querySelectorAll('.area-btn').forEach(b => {
-          if (b !== allBtn) b.classList.remove('active');
-        });
-      } else {
-        const isActive = btn.classList.contains('active');
-        if (isActive) {
-          btn.classList.remove('active');
-          allBtn.classList.add('active');
-        } else {
-          el.multToggles.querySelectorAll('.area-btn:not([data-mult="ALL"])').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          allBtn.classList.remove('active');
-        }
+      // Toggle: クリックでactive切り替え（排他的に1つだけ）
+      const isActive = btn.classList.contains('active');
+      el.multToggles.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+      if (!isActive) {
+        btn.classList.add('active');
       }
       update();
     });
@@ -696,25 +650,11 @@ function bindEvents() {
     el.titleToggles.addEventListener('click', (e) => {
       const btn = e.target.closest('.area-btn');
       if (!btn) return;
-      const title = btn.dataset.title;
-      const allBtn = el.titleToggles.querySelector('.area-btn[data-title="ALL"]');
-
-      if (title === 'ALL') {
-        // Activate ALL and deactivate others
-        allBtn.classList.add('active');
-        el.titleToggles.querySelectorAll('.area-btn').forEach(b => {
-          if (b !== allBtn) b.classList.remove('active');
-        });
-      } else {
-        const isActive = btn.classList.contains('active');
-        if (isActive) {
-          btn.classList.remove('active');
-          allBtn.classList.add('active');
-        } else {
-          el.titleToggles.querySelectorAll('.area-btn:not([data-title="ALL"])').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          allBtn.classList.remove('active');
-        }
+      // Toggle: クリックでactive切り替え（排他的に1つだけ）
+      const isActive = btn.classList.contains('active');
+      el.titleToggles.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+      if (!isActive) {
+        btn.classList.add('active');
       }
       update();
     });
