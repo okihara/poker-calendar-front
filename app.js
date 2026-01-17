@@ -541,6 +541,14 @@ function loadFiltersFromURL() {
     showLateExpiredCheckbox.checked = true;
     table.classList.remove('hide-late-expired');
   }
+
+  // 倍率ソート
+  const sortMult = params.get('sortMult');
+  const sortByMultiplierCheckbox = document.getElementById('sortByMultiplier');
+  if (sortMult === '1' && sortByMultiplierCheckbox) {
+    sortByMultiplierCheckbox.checked = true;
+    state.sort = { key: 'multiplier', dir: 'desc' };
+  }
 }
 
 // 現在のフィルター状態をURLクエリパラメータに反映する
@@ -588,6 +596,12 @@ function updateURLFromFilters() {
   const showLateExpiredCheckbox = document.getElementById('showLateExpired');
   if (showLateExpiredCheckbox && showLateExpiredCheckbox.checked) {
     params.set('showLate', '1');
+  }
+
+  // 倍率ソート
+  const sortByMultiplierCheckbox = document.getElementById('sortByMultiplier');
+  if (sortByMultiplierCheckbox && sortByMultiplierCheckbox.checked) {
+    params.set('sortMult', '1');
   }
 
   // URLを更新（履歴に追加せずに置き換え）
