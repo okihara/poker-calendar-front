@@ -142,11 +142,6 @@ function normalizeRow(row) {
   let multiplier = (!isSatellite && total_prize != null && totalCost > 0)
     ? (total_prize / totalCost)
     : null;
-  // Invalidate unrealistic multiplier (>= 100)
-  if (multiplier != null && isFinite(multiplier) && multiplier >= 100) {
-    multiplier = null;
-  }
-
   return {
     ...row,
     entry_fee,
