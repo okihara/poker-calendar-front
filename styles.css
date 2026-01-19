@@ -29,13 +29,21 @@ body {
   gap: 16px;
   margin-bottom: 16px;
 }
-.header-logo {
+.header-logo-wrapper {
   width: 72px;
   height: 72px;
-  object-fit: cover;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.header-logo {
+  width: 140%;
+  height: 140%;
+  object-fit: cover;
+  object-position: center;
+  margin: -30% 0 0 -30%;
 }
 .header-text {
   display: flex;
