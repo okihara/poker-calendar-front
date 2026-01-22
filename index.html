@@ -28,48 +28,60 @@
   </header>
 
   <section class="controls">
-    <div class="area-toggle-group" id="areaToggles" aria-label="エリアフィルター">
-      <span class="filter-label">エリア</span>
-      <button type="button" class="area-btn" data-area="六本木">六本木</button>
-      <button type="button" class="area-btn" data-area="渋谷">渋谷</button>
-      <button type="button" class="area-btn" data-area="新宿">新宿</button>
-      <button type="button" class="area-btn" data-area="秋葉原">秋葉原</button>
-      <button type="button" class="area-btn" data-area="新橋">新橋</button>
-      <button type="button" class="area-btn" data-area="赤坂">赤坂</button>
-      <button type="button" class="area-btn" data-area="中野">中野</button>
-      <button type="button" class="area-btn" data-area="上野">上野</button>
-      <button type="button" class="area-btn" data-area="池袋">池袋</button>
+    <!-- 折りたたみヘッダー -->
+    <div class="filter-header" id="filterHeader">
+      <button type="button" class="filter-toggle-btn" id="filterToggleBtn">
+        <span class="filter-toggle-icon">▼</span>
+        <span class="filter-toggle-text">絞り込み</span>
+        <span class="filter-active-tags" id="filterActiveTags"></span>
+      </button>
+      <span id="count" class="count"></span>
     </div>
-    <div class="area-toggle-group" id="multToggles" aria-label="倍率フィルター" style="margin-top:8px;">
-      <span class="filter-label">賞金総額比率</span>
-      <button type="button" class="area-btn" data-mult="20-29">x20</button>
-      <button type="button" class="area-btn" data-mult="30-39">x30</button>
-      <button type="button" class="area-btn" data-mult="40-49">x40</button>
-      <button type="button" class="area-btn" data-mult="50plus">x50</button>
-    </div>
-    <div class="area-toggle-group" id="titleToggles" aria-label="タイトルフィルター" style="margin-top:8px;">
-      <span class="filter-label">その他</span>
-      <button type="button" class="area-btn" data-title="戦国">戦国</button>
-      <button type="button" class="area-btn" data-title="JOPT">JOPT</button>
-      <button type="button" class="area-btn" data-title="サテ">サテ</button>
-      <button type="button" class="area-btn" data-title="祝勝">祝勝</button>
-    </div>
-    <div class="search-group" style="margin-top:8px;">
-      <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="店名・タイトル・エリアで検索..." class="search-input">
-        <button type="button" id="clearSearch" class="clear-search-btn" aria-label="検索をクリア">✕</button>
+
+    <!-- 折りたたみ可能なフィルターコンテンツ -->
+    <div class="filter-content" id="filterContent">
+      <div class="area-toggle-group" id="areaToggles" aria-label="エリアフィルター">
+        <span class="filter-label">エリア</span>
+        <button type="button" class="area-btn" data-area="六本木">六本木</button>
+        <button type="button" class="area-btn" data-area="渋谷">渋谷</button>
+        <button type="button" class="area-btn" data-area="新宿">新宿</button>
+        <button type="button" class="area-btn" data-area="秋葉原">秋葉原</button>
+        <button type="button" class="area-btn" data-area="新橋">新橋</button>
+        <button type="button" class="area-btn" data-area="赤坂">赤坂</button>
+        <button type="button" class="area-btn" data-area="中野">中野</button>
+        <button type="button" class="area-btn" data-area="上野">上野</button>
+        <button type="button" class="area-btn" data-area="池袋">池袋</button>
       </div>
-    </div>
-    <div class="late-toggle-group" style="margin-top:8px;">
-      <label class="late-toggle-label">
-        <input type="checkbox" id="showLateExpired">
-        <span class="late-toggle-text">レイト終了を表示</span>
-      </label>
-      <label class="late-toggle-label" style="margin-left:16px;">
-        <input type="checkbox" id="sortByMultiplier">
-        <span class="late-toggle-text">倍率でソート</span>
-      </label>
-      <span id="count" class="count" style="margin-left:16px;"></span>
+      <div class="area-toggle-group" id="multToggles" aria-label="倍率フィルター" style="margin-top:8px;">
+        <span class="filter-label">賞金総額比率</span>
+        <button type="button" class="area-btn" data-mult="20-29">x20</button>
+        <button type="button" class="area-btn" data-mult="30-39">x30</button>
+        <button type="button" class="area-btn" data-mult="40-49">x40</button>
+        <button type="button" class="area-btn" data-mult="50plus">x50</button>
+      </div>
+      <div class="area-toggle-group" id="titleToggles" aria-label="タイトルフィルター" style="margin-top:8px;">
+        <span class="filter-label">その他</span>
+        <button type="button" class="area-btn" data-title="戦国">戦国</button>
+        <button type="button" class="area-btn" data-title="JOPT">JOPT</button>
+        <button type="button" class="area-btn" data-title="サテ">サテ</button>
+        <button type="button" class="area-btn" data-title="祝勝">祝勝</button>
+      </div>
+      <div class="search-group" style="margin-top:8px;">
+        <div class="search-wrapper">
+          <input type="text" id="searchInput" placeholder="店名・タイトル・エリアで検索..." class="search-input">
+          <button type="button" id="clearSearch" class="clear-search-btn" aria-label="検索をクリア">✕</button>
+        </div>
+      </div>
+      <div class="late-toggle-group" style="margin-top:8px;">
+        <label class="late-toggle-label">
+          <input type="checkbox" id="showLateExpired">
+          <span class="late-toggle-text">レイト終了を表示</span>
+        </label>
+        <label class="late-toggle-label" style="margin-left:16px;">
+          <input type="checkbox" id="sortByMultiplier">
+          <span class="late-toggle-text">倍率でソート</span>
+        </label>
+      </div>
     </div>
   </section>
 
