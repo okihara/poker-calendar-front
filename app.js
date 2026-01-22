@@ -368,7 +368,7 @@ function render() {
         <td class="mobile-card-cell">
           <div class="mobile-card">
             <div class="mobile-card-time-row">
-              <span class="mobile-card-time">${mobileDateStr} ${startStr}${lateStr ? `（レイト ${lateStr}）` : ''}</span>
+              <span class="mobile-card-time">${mobileDateStr} ${startStr} スタート${lateStr ? `（レイト ${lateStr}）` : ''}</span>
             </div>
             <div class="mobile-card-header">
               <h3 class="mobile-card-title">${r.title || "タイトルなし"}</h3>
