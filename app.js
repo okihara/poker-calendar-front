@@ -367,6 +367,9 @@ function render() {
         <!-- スマホ用カード -->
         <td class="mobile-card-cell">
           <div class="mobile-card">
+            <div class="mobile-card-time-row">
+              <span class="mobile-card-time">${mobileDateStr} ${startStr}${lateStr ? `（レイト ${lateStr}）` : ''}</span>
+            </div>
             <div class="mobile-card-header">
               <h3 class="mobile-card-title">${r.title || "タイトルなし"}</h3>
               ${multBadgeText ? `<span class="mobile-mult-badge ${multBadgeClass}">${multBadgeText}</span>` : ''}
@@ -374,24 +377,17 @@ function render() {
             <p class="mobile-card-shop"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></p>
 
             <div class="mobile-card-grid">
-              <div class="mobile-card-item">
-                <span class="mobile-card-label">💰 参加費</span>
-                <span class="mobile-card-value">¥${feeStr || "-"}${addOnStr ? ` (Add-on: ${addOnStr})` : ''}</span>
+              <div class="mobile-card-col">
+                <div class="mobile-card-item">
+                  <span class="mobile-card-label">💰 参加費</span>
+                  <span class="mobile-card-value">¥${feeStr || "-"}${addOnStr ? ` (Add-on: ${addOnStr})` : ''}</span>
+                </div>
               </div>
-              <div class="mobile-card-item">
-                <span class="mobile-card-label">🏆 プライズ合計</span>
-                <span class="mobile-card-value">${totalPrizeStr === "不明" ? "不明" : `¥${totalPrizeStr}`}</span>
-              </div>
-            </div>
-
-            <div class="mobile-card-info">
-              <div class="mobile-card-info-row">
-                <span class="mobile-card-label">📅 開始時間</span>
-                <span class="mobile-card-value">${mobileDateStr} ${startStr}</span>
-              </div>
-              <div class="mobile-card-info-row">
-                <span class="mobile-card-label">⏰ レイト</span>
-                <span class="mobile-card-value">${lateStr || "-"}</span>
+              <div class="mobile-card-col">
+                <div class="mobile-card-item">
+                  <span class="mobile-card-label">🏆 プライズ合計</span>
+                  <span class="mobile-card-value">${totalPrizeStr === "不明" ? "不明" : `¥${totalPrizeStr}`}</span>
+                </div>
               </div>
             </div>
 

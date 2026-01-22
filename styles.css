@@ -488,6 +488,19 @@ body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
+  .mobile-card-time-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .mobile-card-time {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
   .mobile-card-header {
     display: flex;
     justify-content: space-between;
@@ -539,62 +552,44 @@ body {
 
   .mobile-card-shop {
     margin: 0 0 8px;
-    font-size: 13px;
+    font-size: 15px;
     color: #9ca3af;
   }
 
   .mobile-card-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px 12px;
-    margin-bottom: 8px;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .mobile-card-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .mobile-card-item {
     display: flex;
-    flex-direction: column;
-    gap: 1px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
   }
 
   .mobile-card-label {
-    font-size: 11px;
+    font-size: 14px;
     color: #9ca3af;
+    white-space: nowrap;
   }
 
   .mobile-card-value {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--text);
+    text-align: right;
   }
 
-  .mobile-card-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-top: 8px;
-    border-top: 1px solid #f3f4f6;
-    margin-bottom: 10px;
-  }
-
-  .mobile-card-info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .mobile-card-info-row .mobile-card-label {
-    font-size: 12px;
-  }
-
-  .mobile-card-info-row .mobile-card-value {
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  .mobile-card-mult {
-    color: #7c3aed;
-    font-weight: 700 !important;
-  }
 
   .mobile-link-btn {
     display: block;
