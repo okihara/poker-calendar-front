@@ -464,8 +464,10 @@ async function fetchAndInit() {
           state.raw = results.data || [];
           state.data = state.raw.map(normalizeRow);
 
-          // 初期ソート: start_time 昇順
-          state.sort = { key: "start_time", dir: "asc" };
+          // 初期ソート: start_time 昇順（URLパラメータで指定がない場合のみ）
+          if (!state.sort.key) {
+            state.sort = { key: "start_time", dir: "asc" };
+          }
 
           update();
           setStatus("");
