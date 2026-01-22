@@ -592,28 +592,49 @@ body {
 
 
   .mobile-link-btn {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     width: 100%;
-    padding: 10px;
+    padding: 12px 16px;
     text-align: center;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: #fafafa;
+    border: 1px solid #6b7280;
     border-radius: 8px;
     color: #6b7280;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     text-decoration: none;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .mobile-link-btn::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 
   .mobile-link-btn:hover {
     background: #f9fafb;
-    border-color: #d1d5db;
+    border-color: #1f2937;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
   .mobile-link-btn-disabled {
-    opacity: 0.5;
+    background: #e5e7eb;
+    color: #9ca3af;
+    box-shadow: none;
     cursor: not-allowed;
+  }
+
+  .mobile-link-btn-disabled::after {
+    display: none;
   }
 
   /* レイト終了済みカードのスタイル */
@@ -623,8 +644,13 @@ body {
   }
 
   .data-table tbody tr.late-reg-expired .mobile-link-btn {
-    background: #f3f4f6;
-    color: #9ca3af;
+    background: #d1d5db;
+    color: #6b7280;
+    box-shadow: none;
+  }
+
+  .data-table tbody tr.late-reg-expired .mobile-link-btn::after {
+    opacity: 0.6;
   }
 
   /* 倍率別ハイライト（カード左ボーダー） */
