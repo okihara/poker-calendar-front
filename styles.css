@@ -400,11 +400,17 @@ body {
   .data-table tbody tr.hl-mult-30plus:hover {
     background: rgba(168, 85, 247, 0.5);
   }
-  .data-table tbody tr.hl-mult-50plus {
+  .data-table tbody tr.hl-mult-40plus {
     background: rgba(239, 68, 68, 0.4);
   }
-  .data-table tbody tr.hl-mult-50plus:hover {
+  .data-table tbody tr.hl-mult-40plus:hover {
     background: rgba(239, 68, 68, 0.5);
+  }
+  .data-table tbody tr.hl-mult-50plus {
+    background: rgba(234, 179, 8, 0.4);
+  }
+  .data-table tbody tr.hl-mult-50plus:hover {
+    background: rgba(234, 179, 8, 0.5);
   }
 }
 
@@ -519,8 +525,12 @@ body {
     color: #a855f7;
   }
 
-  .mobile-mult-badge.mult-badge-50plus {
+  .mobile-mult-badge.mult-badge-40plus {
     color: #ef4444;
+  }
+
+  .mobile-mult-badge.mult-badge-50plus {
+    color: #eab308;
   }
 
   .mobile-mult-badge.mult-badge-ended {
@@ -635,8 +645,12 @@ body {
     border-left: 8px solid #a855f7;
   }
 
-  .data-table tbody tr.hl-mult-50plus .mobile-card {
+  .data-table tbody tr.hl-mult-40plus .mobile-card {
     border-left: 8px solid #ef4444;
+  }
+
+  .data-table tbody tr.hl-mult-50plus .mobile-card {
+    border-left: 8px solid #eab308;
   }
 
   /* レイト終了済みを非表示（トグルオフ時） */
