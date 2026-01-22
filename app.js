@@ -322,6 +322,7 @@ function render() {
       rowClass = 'late-reg-expired';
     } else if (r.multiplier != null && isFinite(r.multiplier)) {
       if (r.multiplier >= 50) rowClass = 'hl-mult-50plus';
+      else if (r.multiplier >= 40) rowClass = 'hl-mult-40plus';
       else if (r.multiplier >= 30) rowClass = 'hl-mult-30plus';
       else if (r.multiplier >= 20) rowClass = 'hl-mult-20plus';
       else if (r.multiplier >= 10) rowClass = 'hl-mult-10to19';
@@ -338,6 +339,7 @@ function render() {
     const multBadgeText = (r.multiplier != null && isFinite(r.multiplier) && r.multiplier > 0) ? `x${Math.round(r.multiplier)}` : '';
     const multBadgeClass = isLateRegistrationPassed ? 'mult-badge-ended' :
       (r.multiplier >= 50 ? 'mult-badge-50plus' :
+       r.multiplier >= 40 ? 'mult-badge-40plus' :
        r.multiplier >= 30 ? 'mult-badge-30plus' :
        r.multiplier >= 20 ? 'mult-badge-20plus' :
        r.multiplier >= 10 ? 'mult-badge-10plus' : '');
