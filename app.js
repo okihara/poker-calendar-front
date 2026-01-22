@@ -19,6 +19,9 @@ const el = {
   multToggles: null,
   titleToggles: null,
   searchInput: null,
+  filterToggleBtn: null,
+  filterContent: null,
+  filterActiveTags: null,
 };
 
 function initElements() {
@@ -30,6 +33,9 @@ function initElements() {
   el.areaToggles = document.getElementById("areaToggles");
   el.multToggles = document.getElementById("multToggles");
   el.titleToggles = document.getElementById("titleToggles");
+  el.filterToggleBtn = document.getElementById("filterToggleBtn");
+  el.filterContent = document.getElementById("filterContent");
+  el.filterActiveTags = document.getElementById("filterActiveTags");
 }
 
 function parseIntSafe(v) {
@@ -407,12 +413,66 @@ function updateCount() {
   }
 }
 
+// フィルターのアクティブ状態をタグとして表示
+function updateFilterActiveTags() {
+  if (!el.filterActiveTags) return;
+
+  const tags = [];
+
+  // エリア
+  const activeArea = el.areaToggles?.querySelector('.area-btn.active');
+  if (activeArea) {
+    tags.push(activeArea.dataset.area);
+  }
+
+  // 倍率
+  const activeMult = el.multToggles?.querySelector('.area-btn.active');
+  if (activeMult) {
+    const multMap = { '20-29': 'x20', '30-39': 'x30', '40-49': 'x40', '50plus': 'x50' };
+    tags.push(multMap[activeMult.dataset.mult] || activeMult.dataset.mult);
+  }
+
+  // タイトル
+  const activeTitle = el.titleToggles?.querySelector('.area-btn.active');
+  if (activeTitle) {
+    tags.push(activeTitle.dataset.title);
+  }
+
+  // 検索
+  if (el.searchInput && el.searchInput.value.trim()) {
+    tags.push(`"${el.searchInput.value.trim()}"`);
+  }
+
+  // タグを表示
+  if (tags.length > 0) {
+    el.filterActiveTags.innerHTML = tags.map(t => `<span class="filter-tag">${t}</span>`).join('');
+  } else {
+    el.filterActiveTags.innerHTML = '';
+  }
+}
+
+// フィルター開閉切り替え
+function toggleFilterCollapse() {
+  if (!el.filterToggleBtn || !el.filterContent) return;
+
+  const isCollapsed = el.filterContent.classList.contains('collapsed');
+
+  if (isCollapsed) {
+    el.filterContent.classList.remove('collapsed');
+    el.filterToggleBtn.classList.remove('collapsed');
+  } else {
+    el.filterContent.classList.add('collapsed');
+    el.filterToggleBtn.classList.add('collapsed');
+  }
+}
+
 function update() {
   applyFilters();
   sortRows();
   updateSortIndicator();
   render();
   updateCount();
+  updateFilterActiveTags();
   updateURLFromFilters();
 }
 
@@ -613,6 +673,11 @@ function updateURLFromFilters() {
 
 function bindEvents() {
   el.table.addEventListener("click", onHeaderClick);
+
+  // Bind filter toggle button
+  if (el.filterToggleBtn) {
+    el.filterToggleBtn.addEventListener('click', toggleFilterCollapse);
+  }
 
   // Bind date tabs (today / tomorrow)
   if (el.dateToggles) {

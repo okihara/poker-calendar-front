@@ -97,6 +97,78 @@ body {
 .controls {
   padding: 12px 16px 0;
 }
+
+/* 折りたたみフィルターヘッダー */
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.filter-toggle-btn:hover {
+  background: #f5f5f5;
+}
+
+.filter-toggle-icon {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.filter-toggle-btn.collapsed .filter-toggle-icon {
+  transform: rotate(-90deg);
+}
+
+.filter-toggle-text {
+  color: var(--muted);
+}
+
+.filter-active-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.filter-tag {
+  display: inline-block;
+  background: #333;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* 折りたたみコンテンツ */
+.filter-content {
+  overflow: hidden;
+  max-height: 500px;
+  transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+  opacity: 1;
+  padding-top: 12px;
+}
+
+.filter-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+}
 .area-toggle-group {
   display: flex;
   flex-wrap: wrap;
