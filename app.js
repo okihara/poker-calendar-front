@@ -142,6 +142,8 @@ function normalizeRow(row) {
   let multiplier = (!isSatellite && total_prize != null && totalCost > 0)
     ? (total_prize / totalCost)
     : null;
+  // 倍率500以上は異常値とみなし、倍率なしとして扱う
+  if (multiplier != null && multiplier >= 500) multiplier = null;
   return {
     ...row,
     entry_fee,
