@@ -115,7 +115,8 @@ body {
   background: #ffffff;
   color: var(--text);
   border-radius: 6px;
-  padding: 8px 14px;
+  padding: 4px 14px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.2px;
 }

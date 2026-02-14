@@ -815,9 +815,12 @@ function bindEvents() {
     if (!shopLink) return;
     const shopName = shopLink.dataset.shop;
     if (shopName && el.searchInput) {
-      el.searchInput.value = shopName;
-      if (clearSearchBtn) {
-        clearSearchBtn.style.display = 'flex';
+      if (el.searchInput.value === shopName) {
+        el.searchInput.value = '';
+        if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+      } else {
+        el.searchInput.value = shopName;
+        if (clearSearchBtn) clearSearchBtn.style.display = 'flex';
       }
       update();
     }
