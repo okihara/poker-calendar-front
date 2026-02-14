@@ -422,22 +422,27 @@ function render() {
       `<a href="${r.link}" class="title-link">${r.title || ""}</a>` :
       (r.title || "");
 
-    // 日付表示（スマホ用）
-    const mobileDateStr = r.date_only ? `${r.date_only.getMonth() + 1}月${r.date_only.getDate()}日` : "";
+    // 日付表示（スマホ用）MM/DD(曜日)
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    const mobileDateStr = r.date_only
+      ? `${String(r.date_only.getMonth() + 1).padStart(2, '0')}/${String(r.date_only.getDate()).padStart(2, '0')}(${weekdays[r.date_only.getDay()]})`
+      : "";
+    const mobileStartTime = r.start_dt
+      ? `${String(r.start_dt.getHours()).padStart(2, '0')}:${String(r.start_dt.getMinutes()).padStart(2, '0')}`
+      : "";
 
-    // 倍率バッジ（右上に大きく表示）
-    const multBadgeText = (r.multiplier != null && isFinite(r.multiplier) && r.multiplier > 0) ? `x${Math.round(r.multiplier)}` : '';
-    const multBadgeClass = isLateRegistrationPassed ? 'mult-badge-ended' :
-      (r.multiplier >= 50 ? 'mult-badge-50plus' :
-       r.multiplier >= 40 ? 'mult-badge-40plus' :
-       r.multiplier >= 30 ? 'mult-badge-30plus' :
-       r.multiplier >= 20 ? 'mult-badge-20plus' :
-       r.multiplier >= 10 ? 'mult-badge-10plus' : '');
+    // 倍率バッジ（スマホ用）
+    const multBadgeText = (r.multiplier != null && isFinite(r.multiplier) && r.multiplier > 0) ? `倍率: ${(Math.round(r.multiplier * 10) / 10).toFixed(1)}x` : '';
+    const multBadgeClass = r.multiplier >= 50 ? 'mult-50plus' :
+      r.multiplier >= 40 ? 'mult-40plus' :
+      r.multiplier >= 30 ? 'mult-30plus' :
+      r.multiplier >= 20 ? 'mult-20plus' :
+      r.multiplier >= 10 ? 'mult-10plus' : '';
 
-    // リンクボタン（スマホ用）
-    const mobileLinkBtn = r.link ?
-      `<a href="${r.link}" class="mobile-link-btn">詳細を見る</a>` :
-      `<span class="mobile-link-btn mobile-link-btn-disabled">リンクなし</span>`;
+    // レイト締切表示（スマホ用）
+    const mobileLateStr = r.late_reg_dt
+      ? `締切 ${String(r.late_reg_dt.getHours()).padStart(2, '0')}:${String(r.late_reg_dt.getMinutes()).padStart(2, '0')}`
+      : "";
 
     return `
       <tr class="${rowClass}">
@@ -456,33 +461,25 @@ function render() {
 
         <!-- スマホ用カード -->
         <td class="mobile-card-cell">
-          <div class="mobile-card">
-            <div class="mobile-card-time-row">
-              <span class="mobile-card-time">${mobileDateStr} ${startStr} スタート${lateStr ? `（レイト ${lateStr}）` : ''}</span>
+          <${r.link ? `a href="${r.link}"` : 'div'} class="mobile-card">
+            <div class="mobile-card-left">
+              <span class="mobile-card-date">${mobileDateStr}</span>
+              <span class="mobile-card-start-time">${mobileStartTime}</span>
             </div>
-            <div class="mobile-card-header">
+            <div class="mobile-card-right">
               <h3 class="mobile-card-title">${r.title || "タイトルなし"}</h3>
-              ${multBadgeText ? `<span class="mobile-mult-badge ${multBadgeClass}">${multBadgeText}</span>` : ''}
-            </div>
-            <p class="mobile-card-shop"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></p>
-
-            <div class="mobile-card-grid">
-              <div class="mobile-card-col">
-                <div class="mobile-card-item">
-                  <span class="mobile-card-label">💰 参加費</span>
-                  <span class="mobile-card-value">¥${feeStr || "-"}${addOnStr ? ` (Add-on: ${addOnStr})` : ''}</span>
-                </div>
+              <p class="mobile-card-shop"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></p>
+              <div class="mobile-card-details">
+                ${mobileLateStr ? `<span>⏰ ${mobileLateStr}</span>` : ''}
+                ${feeStr ? `<span>💰 ¥${feeStr}</span>` : ''}
               </div>
-              <div class="mobile-card-col">
-                <div class="mobile-card-item">
-                  <span class="mobile-card-label">🏆 プライズ合計</span>
-                  <span class="mobile-card-value">${totalPrizeStr === "不明" ? "不明" : `¥${totalPrizeStr}`}</span>
-                </div>
+              <div class="mobile-card-badges">
+                ${multBadgeText ? `<span class="mobile-badge mobile-badge-mult ${multBadgeClass}">${multBadgeText}</span>` : ''}
+                ${totalPrizeStr !== "不明" ? `<span class="mobile-badge mobile-badge-prize">賞金: ¥${totalPrizeStr}</span>` : ''}
               </div>
             </div>
-
-            ${mobileLinkBtn}
-          </div>
+            <div class="mobile-card-arrow">›</div>
+          </${r.link ? 'a' : 'div'}>
         </td>
       </tr>`;
   }).join("");

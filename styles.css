@@ -480,177 +480,165 @@ body {
 
   /* スマホ用カード */
   .mobile-card {
+    display: flex;
+    align-items: stretch;
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    padding: 12px 14px;
     margin: 8px 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
   }
 
-  .mobile-card-time-row {
+  a.mobile-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+  }
+
+  .mobile-card-left {
     display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 6px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 12px 8px;
+    background: #f8f9fa;
+    border-right: 1px solid #e5e7eb;
+    flex-shrink: 0;
   }
 
-  .mobile-card-time {
-    font-size: 16px;
-    font-weight: 700;
+  .mobile-card-date {
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .mobile-card-start-time {
+    font-size: 24px;
+    font-weight: 800;
     color: var(--text);
+    line-height: 1.1;
   }
 
-  .mobile-card-header {
+  .mobile-card-right {
+    flex: 1;
+    padding: 10px 12px;
+    min-width: 0;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 2px;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .mobile-card-title {
     margin: 0;
     font-size: 15px;
-    font-weight: 500;
-    color: var(--muted);
+    font-weight: 700;
+    color: var(--text);
     line-height: 1.3;
-    flex: 1;
-  }
-
-  /* 倍率バッジ（右上に大きく表示） */
-  .mobile-mult-badge {
-    flex-shrink: 0;
-    font-size: 42px;
-    font-weight: 800;
-    line-height: 1;
-  }
-
-  .mobile-mult-badge.mult-badge-10plus {
-    color: #22c55e;
-  }
-
-  .mobile-mult-badge.mult-badge-20plus {
-    color: #3b82f6;
-  }
-
-  .mobile-mult-badge.mult-badge-30plus {
-    color: #a855f7;
-  }
-
-  .mobile-mult-badge.mult-badge-40plus {
-    color: #ef4444;
-  }
-
-  .mobile-mult-badge.mult-badge-50plus {
-    color: #eab308;
-  }
-
-  .mobile-mult-badge.mult-badge-ended {
-    color: #9ca3af;
   }
 
   .mobile-card-shop {
-    margin: 0 0 8px;
-    font-size: 15px;
+    margin: 0;
+    font-size: 13px;
     color: #9ca3af;
   }
 
-  .mobile-card-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-
-  .mobile-card-col {
+  .mobile-card-details {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
   }
 
-  .mobile-card-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .mobile-card-label {
-    font-size: 14px;
-    color: #9ca3af;
+  .mobile-card-details span {
     white-space: nowrap;
   }
 
-  .mobile-card-value {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-    text-align: right;
+  .mobile-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 2px;
   }
 
+  .mobile-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
 
-  .mobile-link-btn {
+  .mobile-badge-mult {
+    border: 1.5px solid #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  .mobile-badge-mult.mult-10plus {
+    border-color: #22c55e;
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.08);
+  }
+
+  .mobile-badge-mult.mult-20plus {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+  }
+
+  .mobile-badge-mult.mult-30plus {
+    border-color: #a855f7;
+    color: #a855f7;
+    background: rgba(168, 85, 247, 0.08);
+  }
+
+  .mobile-badge-mult.mult-40plus {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  .mobile-badge-mult.mult-50plus {
+    border-color: #eab308;
+    color: #eab308;
+    background: rgba(234, 179, 8, 0.08);
+  }
+
+  .mobile-badge-fee {
+    border: 1.5px solid #6b7280;
+    color: #6b7280;
+    background: rgba(107, 114, 128, 0.08);
+  }
+
+  .mobile-badge-prize {
+    border: 1.5px solid #3b82f6;
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+  }
+
+  .mobile-badge-late {
+    border: 1.5px solid #f97316;
+    color: #f97316;
+    background: rgba(249, 115, 22, 0.08);
+  }
+
+  .mobile-card-arrow {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    width: 100%;
-    padding: 12px 16px;
-    text-align: center;
-    background: #fafafa;
-    border: 1px solid #6b7280;
-    border-radius: 8px;
-    color: #6b7280;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .mobile-link-btn::after {
-    content: '';
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-  }
-
-  .mobile-link-btn:hover {
-    background: #f9fafb;
-    border-color: #1f2937;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  .mobile-link-btn-disabled {
-    background: #e5e7eb;
-    color: #9ca3af;
-    box-shadow: none;
-    cursor: not-allowed;
-  }
-
-  .mobile-link-btn-disabled::after {
-    display: none;
+    padding: 0 10px;
+    font-size: 20px;
+    color: #ccc;
+    flex-shrink: 0;
   }
 
   /* レイト終了済みカードのスタイル */
   .data-table tbody tr.late-reg-expired .mobile-card {
-    opacity: 0.6;
+    opacity: 0.5;
     background: #f9fafb;
-  }
-
-  .data-table tbody tr.late-reg-expired .mobile-link-btn {
-    background: #d1d5db;
-    color: #6b7280;
-    box-shadow: none;
-  }
-
-  .data-table tbody tr.late-reg-expired .mobile-link-btn::after {
-    opacity: 0.6;
   }
 
   /* 倍率別ハイライト（カード左ボーダー） */
