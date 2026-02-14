@@ -1,5 +1,92 @@
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRfrIH1vQwDxdZqaoE8t7Q33O5Hxig_18xijgI77yRhfgGUOEUsioJ9zD08hoNuMklZXOxqmmejfq/pub?gid=1600443875&single=true&output=csv";
 
+// Debug time override (hidden feature)
+// Activate via URL param: ?debug_time=2026-02-14T23:30
+// Or console: __setDebugTime('2026-02-14T23:30')
+let _debugTime = null;
+
+function getNow() {
+  return _debugTime ? new Date(_debugTime.getTime()) : new Date();
+}
+
+window.__setDebugTime = function(str) {
+  if (!str) {
+    _debugTime = null;
+    _hideDebugBar();
+    updateDateTabs();
+    update();
+    console.log('[Debug] Time override cleared');
+    return;
+  }
+  const d = new Date(str);
+  if (isNaN(d.getTime())) {
+    console.error('[Debug] Invalid date:', str);
+    return;
+  }
+  _debugTime = d;
+  _showDebugBar();
+  updateDateTabs();
+  update();
+  console.log('[Debug] Time set to:', d.toLocaleString());
+};
+
+window.__clearDebugTime = function() {
+  window.__setDebugTime(null);
+};
+
+function _showDebugBar() {
+  let bar = document.getElementById('debugTimeBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'debugTimeBar';
+    bar.innerHTML = `
+      <span id="debugTimeLabel"></span>
+      <input type="datetime-local" id="debugTimeInput" step="60">
+      <button id="debugTimeSet">適用</button>
+      <button id="debugTimeClear">解除</button>
+    `;
+    document.body.prepend(bar);
+    document.getElementById('debugTimeSet').addEventListener('click', () => {
+      const val = document.getElementById('debugTimeInput').value;
+      if (val) window.__setDebugTime(val);
+    });
+    document.getElementById('debugTimeClear').addEventListener('click', () => {
+      window.__clearDebugTime();
+    });
+  }
+  bar.style.display = 'flex';
+  const label = document.getElementById('debugTimeLabel');
+  if (label && _debugTime) {
+    label.textContent = `DEBUG: ${_debugTime.toLocaleString('ja-JP')}`;
+  }
+  const input = document.getElementById('debugTimeInput');
+  if (input && _debugTime) {
+    const y = _debugTime.getFullYear();
+    const mo = String(_debugTime.getMonth() + 1).padStart(2, '0');
+    const d = String(_debugTime.getDate()).padStart(2, '0');
+    const h = String(_debugTime.getHours()).padStart(2, '0');
+    const mi = String(_debugTime.getMinutes()).padStart(2, '0');
+    input.value = `${y}-${mo}-${d}T${h}:${mi}`;
+  }
+}
+
+function _hideDebugBar() {
+  const bar = document.getElementById('debugTimeBar');
+  if (bar) bar.style.display = 'none';
+}
+
+function _initDebugTimeFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const dt = params.get('debug_time');
+  if (dt) {
+    const d = new Date(dt);
+    if (!isNaN(d.getTime())) {
+      _debugTime = d;
+      _showDebugBar();
+    }
+  }
+}
+
 // State
 const state = {
   raw: [],
@@ -177,7 +264,7 @@ function applyFilters() {
   if (el.dateToggles) {
     const activeDateBtn = el.dateToggles.querySelector('.date-tab.active');
     const selectedDate = activeDateBtn?.dataset.date || 'today';
-    const now = new Date();
+    const now = getNow();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrowStart = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
@@ -321,7 +408,7 @@ function render() {
     el.tbody.innerHTML = `<tr><td colspan="11" style=\"color:#a8b2d1;padding:16px;\">該当データがありません</td></tr>`;
     return;
   }
-  const now = new Date();
+  const now = getNow();
   const html = rows.map(r => {
     const dateStr = r.date_only ? fmtDate(r.date_only) : (r.date || "");
     const startStr = r.start_dt ? `${fmtTime(r.start_dt)}` : (r.start_time || "");
@@ -458,7 +545,7 @@ function debounce(fn, wait = 250) {
 
 function updateDateTabs() {
   if (!el.dateToggles) return;
-  const today = new Date();
+  const today = getNow();
   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
   const todayTab = el.dateToggles.querySelector('.date-tab[data-date="today"]');
   const tomorrowTab = el.dateToggles.querySelector('.date-tab[data-date="tomorrow"]');
@@ -760,5 +847,6 @@ function bindEvents() {
 
 // Initialize
 initElements();
+_initDebugTimeFromURL();
 bindEvents();
 fetchAndInit();

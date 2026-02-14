@@ -679,3 +679,44 @@ body {
     display: none !important;
   }
 }
+
+/* Debug time bar */
+#debugTimeBar {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #1a1a2e;
+  border-bottom: 2px solid #e74c3c;
+  color: #e74c3c;
+  font-family: monospace;
+  font-size: 13px;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  flex-wrap: wrap;
+}
+#debugTimeLabel {
+  font-weight: bold;
+}
+#debugTimeInput {
+  background: #2a2a3e;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 13px;
+}
+#debugTimeBar button {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+#debugTimeBar button:last-child {
+  background: #555;
+}
