@@ -465,17 +465,17 @@ function render() {
             <div class="mobile-card-left">
               <span class="mobile-card-date">${mobileDateStr}</span>
               <span class="mobile-card-start-time">${mobileStartTime}</span>
+              ${mobileLateStr ? `<span class="mobile-card-late">${mobileLateStr}</span>` : ''}
             </div>
             <div class="mobile-card-right">
               <h3 class="mobile-card-title">${r.title || "タイトルなし"}</h3>
               <p class="mobile-card-shop"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></p>
               <div class="mobile-card-details">
-                ${mobileLateStr ? `<span>⏰ ${mobileLateStr}</span>` : ''}
-                ${feeStr ? `<span>💰 ¥${feeStr}</span>` : ''}
+                ${feeStr ? `<span>参加費: ¥${feeStr}</span>` : ''}
+                ${totalPrizeStr !== "不明" ? `<span>賞金: ¥${totalPrizeStr}</span>` : ''}
               </div>
               <div class="mobile-card-badges">
                 ${multBadgeText ? `<span class="mobile-badge mobile-badge-mult ${multBadgeClass}">${multBadgeText}</span>` : ''}
-                ${totalPrizeStr !== "不明" ? `<span class="mobile-badge mobile-badge-prize">賞金: ¥${totalPrizeStr}</span>` : ''}
               </div>
             </div>
             <div class="mobile-card-arrow">›</div>
