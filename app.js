@@ -190,6 +190,11 @@ function fmtTime(d) {
   if (!(d instanceof Date)) return "";
   const hh = String(d.getHours()).padStart(2, "0");
   const mm = String(d.getMinutes()).padStart(2, "0");
+  if (_debugTime) {
+    const m = d.getMonth() + 1;
+    const day = d.getDate();
+    return `${m}/${day} ${hh}:${mm}`;
+  }
   return `${hh}:${mm}`;
 }
 
@@ -268,32 +273,13 @@ function applyFilters() {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrowStart = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
-    if (selectedDate === 'today') {
-      rows = rows.filter(r => {
-        if (!r.date_only) return false;
-        const rowDate = new Date(r.date_only.getFullYear(), r.date_only.getMonth(), r.date_only.getDate());
-        // 今日の開催分
-        if (rowDate.getTime() === todayStart.getTime()) return true;
-        // 前日開催だがレイトレジストレーションがまだ終わっていないもの
-        const yesterdayStart = new Date(todayStart.getTime() - 24 * 60 * 60 * 1000);
-        if (rowDate.getTime() === yesterdayStart.getTime() && r.late_reg_dt && r.late_reg_dt > now) {
-          return true;
-        }
-        return false;
-      });
-    } else if (selectedDate === 'tomorrow') {
-      rows = rows.filter(r => {
-        if (!r.date_only) return false;
-        const rowDate = new Date(r.date_only.getFullYear(), r.date_only.getMonth(), r.date_only.getDate());
-        // 明日の開催分
-        if (rowDate.getTime() === tomorrowStart.getTime()) return true;
-        // 今日開催だがレイトレジストレーションが明日まで続いているもの
-        if (rowDate.getTime() === todayStart.getTime() && r.late_reg_dt && r.late_reg_dt > tomorrowStart) {
-          return true;
-        }
-        return false;
-      });
-    }
+    // 1日の定義: 当日00:00 〜 翌日06:00 にlate_reg_dtが含まれるもの
+    const selectedStart = selectedDate === 'tomorrow' ? tomorrowStart : todayStart;
+    const selectedEnd = new Date(selectedStart.getTime() + 30 * 60 * 60 * 1000); // +30h = 翌日06:00
+    rows = rows.filter(r => {
+      if (!r.late_reg_dt) return false;
+      return r.late_reg_dt >= selectedStart && r.late_reg_dt < selectedEnd;
+    });
   }
 
   // Area filter
