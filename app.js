@@ -437,7 +437,7 @@ function render() {
       r.multiplier >= 40 ? 'mult-40plus' :
       r.multiplier >= 30 ? 'mult-30plus' :
       r.multiplier >= 20 ? 'mult-20plus' :
-      r.multiplier >= 10 ? 'mult-10plus' : '';
+      r.multiplier >= 10 ? 'mult-10plus' : 'mult-under10';
 
     // レイト締切表示（スマホ用）
     const mobileLateStr = r.late_reg_dt
@@ -461,7 +461,7 @@ function render() {
 
         <!-- スマホ用カード -->
         <td class="mobile-card-cell">
-          <${r.link ? `a href="${r.link}"` : 'div'} class="mobile-card">
+          <div class="mobile-card">
             <div class="mobile-card-left">
               <span class="mobile-card-date">${mobileDateStr}</span>
               <span class="mobile-card-start-time">${mobileStartTime}</span>
@@ -472,14 +472,14 @@ function render() {
               <p class="mobile-card-shop"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></p>
               <div class="mobile-card-details">
                 ${feeStr ? `<span>参加費: ¥${feeStr}</span>` : ''}
-                ${totalPrizeStr !== "不明" ? `<span>賞金: ¥${totalPrizeStr}</span>` : ''}
+                ${totalPrizeStr !== "不明" ? `<span>賞金: ${totalPrizeStr}</span>` : ''}
               </div>
               <div class="mobile-card-badges">
                 ${multBadgeText ? `<span class="mobile-badge mobile-badge-mult ${multBadgeClass}">${multBadgeText}</span>` : ''}
               </div>
             </div>
-            <div class="mobile-card-arrow">›</div>
-          </${r.link ? 'a' : 'div'}>
+            ${r.link ? `<a href="${r.link}" class="mobile-card-arrow">›</a>` : ''}
+          </div>
         </td>
       </tr>`;
   }).join("");
