@@ -49,3 +49,37 @@ Expected CSV columns: `ID`, `shop_name`, `address`, `area`, `title`, `date`, `st
 - Mobile breakpoint: 768px (switches table to cards)
 - Date/time parsing handles Japanese formats (YYYY/MM/DD HH:mm)
 - Prize calculations parse various formats (万, 千, k, x2 multipliers)
+- All time references use `getNow()` instead of `new Date()` to support debug time override
+
+## Debug: Time Override
+Hidden feature to override the current time for testing date filters and late registration logic.
+
+### How to activate
+1. **URL param** — URLに `?debug_time=` を追加:
+   ```
+   http://localhost:5173/?debug_time=2026-02-14T23:30
+   ```
+2. **Browser console** — コンソールから直接呼び出し:
+   ```js
+   __setDebugTime('2026-02-14T23:30')  // 任意の日時を設定
+   __clearDebugTime()                   // 解除して実時刻に戻す
+   ```
+3. **Debug bar UI** — 起動後に画面上部に表示される赤いバーから datetime picker で変更・解除が可能
+
+### What it affects
+- `getNow()` が返す値（アプリ内の全 `new Date()` を置換済み）
+- 日付タブ（「今日」「明日」）のフィルタリング結果
+- レイトレジストレーション期限切れ判定
+- 日付タブのラベル表示（例: 2月14日(土) → 設定日に変化）
+
+### Example use cases
+```
+# 深夜帯のレイトレジ表示テスト
+?debug_time=2026-02-15T01:30
+
+# 明日タブの動作確認
+?debug_time=2026-02-14T10:00
+
+# 他のフィルターと併用
+?debug_time=2026-02-14T23:00&area=六本木
+```
