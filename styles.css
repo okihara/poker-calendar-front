@@ -352,10 +352,6 @@ body {
   text-decoration: underline;
 }
 
-/* Hide late registration expired when toggle is off */
-.data-table.hide-late-expired tbody tr.late-reg-expired {
-  display: none !important;
-}
 .data-table .number { text-align: right; }
 
 /* Column width adjustments for PC only */
@@ -675,10 +671,6 @@ body {
     border-color: #eab308;
   }
 
-  /* レイト終了済みを非表示（トグルオフ時） */
-  .data-table.hide-late-expired tbody tr.late-reg-expired {
-    display: none !important;
-  }
 }
 
 /* Debug time bar */

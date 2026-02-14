@@ -348,6 +348,16 @@ function applyFilters() {
     }
   }
 
+  // Late registration expired filter
+  const showLateExpiredCheckbox = document.getElementById('showLateExpired');
+  if (!showLateExpiredCheckbox || !showLateExpiredCheckbox.checked) {
+    const now = getNow();
+    rows = rows.filter(r => {
+      if (!r.late_reg_dt) return true;
+      return r.late_reg_dt >= now;
+    });
+  }
+
   state.filtered = rows;
 }
 
@@ -623,10 +633,8 @@ function loadFiltersFromURL() {
   // レイト過ぎ表示
   const showLate = params.get('showLate');
   const showLateExpiredCheckbox = document.getElementById('showLateExpired');
-  const table = document.getElementById('table');
-  if (showLate === '1' && showLateExpiredCheckbox && table) {
+  if (showLate === '1' && showLateExpiredCheckbox) {
     showLateExpiredCheckbox.checked = true;
-    table.classList.remove('hide-late-expired');
   }
 
   // 倍率ソート
@@ -758,18 +766,9 @@ function bindEvents() {
 
   // Bind late registration expired toggle
   const showLateExpiredCheckbox = document.getElementById('showLateExpired');
-  const table = document.getElementById('table');
-  if (showLateExpiredCheckbox && table) {
-    // Set initial state to hide late expired (default unchecked = hide)
-    table.classList.add('hide-late-expired');
-
+  if (showLateExpiredCheckbox) {
     showLateExpiredCheckbox.addEventListener('change', () => {
-      if (showLateExpiredCheckbox.checked) {
-        table.classList.remove('hide-late-expired');
-      } else {
-        table.classList.add('hide-late-expired');
-      }
-      updateURLFromFilters();
+      update();
     });
   }
 
