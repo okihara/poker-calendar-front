@@ -450,8 +450,8 @@ function render() {
       r.multiplier >= 10 ? 'mult-10plus' : 'mult-under10';
 
     // レイト締切表示（スマホ用）
-    const mobileLateStr = r.late_reg_dt
-      ? `締切 ${String(r.late_reg_dt.getHours()).padStart(2, '0')}:${String(r.late_reg_dt.getMinutes()).padStart(2, '0')}`
+    const mobileLateTime = r.late_reg_dt
+      ? `${String(r.late_reg_dt.getHours()).padStart(2, '0')}:${String(r.late_reg_dt.getMinutes()).padStart(2, '0')}`
       : "";
 
     return `
@@ -475,7 +475,7 @@ function render() {
             <div class="mobile-card-left">
               <span class="mobile-card-date">${mobileDateStr}</span>
               <span class="mobile-card-start-time">${mobileStartTime}</span>
-              ${mobileLateStr ? `<span class="mobile-card-late">${mobileLateStr}</span>` : ''}
+              ${mobileLateTime ? `<span class="mobile-card-late"><span class="mobile-card-late-label">締切</span><span class="mobile-card-late-time">${mobileLateTime}</span></span>` : ''}
             </div>
             <div class="mobile-card-right">
               <h3 class="mobile-card-title">${r.title || "タイトルなし"}</h3>
