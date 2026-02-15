@@ -262,7 +262,8 @@ function setStatus(msg, showSpinner = false) {
 
 // area toggles: buttons with .area-btn.active represent enabled filters
 
-function applyFilters() {
+// 倍率フィルター以外の全フィルターを適用した行を返す
+function getBaseFilteredRows() {
   let rows = state.data.slice();
 
   // Date filter (today / tomorrow)
@@ -297,23 +298,6 @@ function applyFilters() {
         });
       });
     });
-  }
-
-  // Multiplier filter
-  if (el.multToggles) {
-    const activeMultBtn = el.multToggles.querySelector('.area-btn.active');
-    const sel = activeMultBtn?.dataset.mult;
-    if (sel === '10-19') {
-      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 10 && r.multiplier < 20);
-    } else if (sel === '20-29') {
-      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 20 && r.multiplier < 30);
-    } else if (sel === '30-39') {
-      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30 && r.multiplier < 40);
-    } else if (sel === '40-49') {
-      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 40 && r.multiplier < 50);
-    } else if (sel === '50plus') {
-      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 50);
-    }
   }
 
   // Title filter
@@ -358,7 +342,60 @@ function applyFilters() {
     });
   }
 
+  return rows;
+}
+
+function applyFilters() {
+  let rows = getBaseFilteredRows();
+
+  // Multiplier filter
+  if (el.multToggles) {
+    const activeMultBtn = el.multToggles.querySelector('.area-btn.active');
+    const sel = activeMultBtn?.dataset.mult;
+    if (sel === '10-19') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 10 && r.multiplier < 20);
+    } else if (sel === '20-29') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 20 && r.multiplier < 30);
+    } else if (sel === '30-39') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 30 && r.multiplier < 40);
+    } else if (sel === '40-49') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 40 && r.multiplier < 50);
+    } else if (sel === '50plus') {
+      rows = rows.filter(r => r.multiplier != null && isFinite(r.multiplier) && r.multiplier >= 50);
+    }
+  }
+
   state.filtered = rows;
+}
+
+// 倍率フィルターボタンに件数を表示
+const multLabels = {
+  '10-19': 'x10',
+  '20-29': 'x20',
+  '30-39': 'x30',
+  '40-49': 'x40',
+  '50plus': 'x50+',
+};
+
+function updateMultiplierCounts() {
+  if (!el.multToggles) return;
+  const rows = getBaseFilteredRows();
+  const counts = { '10-19': 0, '20-29': 0, '30-39': 0, '40-49': 0, '50plus': 0 };
+  rows.forEach(r => {
+    if (r.multiplier != null && isFinite(r.multiplier)) {
+      if (r.multiplier >= 50) counts['50plus']++;
+      else if (r.multiplier >= 40) counts['40-49']++;
+      else if (r.multiplier >= 30) counts['30-39']++;
+      else if (r.multiplier >= 20) counts['20-29']++;
+      else if (r.multiplier >= 10) counts['10-19']++;
+    }
+  });
+  el.multToggles.querySelectorAll('.area-btn[data-mult]').forEach(btn => {
+    const key = btn.dataset.mult;
+    const label = multLabels[key] || key;
+    const count = counts[key] || 0;
+    btn.textContent = `${label} (${count})`;
+  });
 }
 
 function sortRows() {
@@ -510,6 +547,7 @@ function update() {
   updateSortIndicator();
   render();
   updateCount();
+  updateMultiplierCounts();
   updateURLFromFilters();
 }
 
