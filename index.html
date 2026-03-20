@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ポーカートナメ検索</title>
   <meta name="description" content="ポーカートーナメント情報を簡単に検索" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="トナメ検索" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./images/icon-192.png" />
+  <meta name="theme-color" content="#3a86ff" />
   <meta property="og:title" content="ポーカートナメ検索" />
   <meta property="og:description" content="ポーカートーナメント情報を簡単に検索" />
   <meta property="og:image" content="https://poker-search.vercel.app/images/ogp.png" />
@@ -17,6 +23,13 @@
   <!-- PapaParse for robust CSV parsing -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
   <script src="./app.js" type="module" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
 </head>
 <body>
   <header class="app-header">
