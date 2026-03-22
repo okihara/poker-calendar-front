@@ -881,9 +881,7 @@ function bindEvents() {
 function openExternalDialog(url) {
   const dialog = document.getElementById('externalSiteDialog');
   const iframe = document.getElementById('externalDialogIframe');
-  const link = document.getElementById('externalDialogLink');
-  if (!dialog || !iframe || !link) return;
-  link.href = url;
+  if (!dialog || !iframe) return;
   iframe.src = url;
   dialog.showModal();
 }
