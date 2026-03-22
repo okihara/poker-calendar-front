@@ -871,7 +871,7 @@ function bindEvents() {
     if (card) {
       const href = card.dataset.href;
       if (href.includes('pokerfans')) {
-        location.href = href;
+        window.open(href, '_blank', 'noopener');
       } else {
         openExternalDialog(href);
       }
@@ -917,7 +917,6 @@ function openExternalDialog(url) {
   });
 
   // 外部サイトから戻った時にダイアログの状態をクリーンアップ
-  // BFCache復元(persisted=true)でも通常の再読み込みでも実行
   window.addEventListener('pageshow', () => {
     closeDialog();
   });
