@@ -871,7 +871,7 @@ function bindEvents() {
     if (card) {
       const href = card.dataset.href;
       if (href.includes('pokerfans')) {
-        location.href = href;
+        window.open(href, '_blank', 'noopener');
       } else {
         openExternalDialog(href);
       }
@@ -883,8 +883,6 @@ function bindEvents() {
 }
 
 // 外部サイトダイアログ
-let _dialogHasBeenShown = false;
-
 function openExternalDialog(url) {
   const dialog = document.getElementById('externalSiteDialog');
   const iframe = document.getElementById('externalDialogIframe');
@@ -893,7 +891,6 @@ function openExternalDialog(url) {
   if (spinner) spinner.classList.remove('hidden');
   iframe.src = url;
   dialog.showModal();
-  _dialogHasBeenShown = true;
 }
 
 (function initExternalDialog() {
@@ -920,13 +917,7 @@ function openExternalDialog(url) {
   });
 
   // 外部サイトから戻った時にダイアログの状態をクリーンアップ
-  // BFCache復元時、<dialog>のモーダル状態（top layer, inert）が
-  // 正しく復元されない場合があるため、ダイアログ使用後はリロードする
-  window.addEventListener('pageshow', (e) => {
-    if (e.persisted && _dialogHasBeenShown) {
-      location.reload();
-      return;
-    }
+  window.addEventListener('pageshow', () => {
     closeDialog();
   });
 })();
