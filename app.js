@@ -871,7 +871,7 @@ function bindEvents() {
     if (card) {
       const href = card.dataset.href;
       if (href.includes('pokerfans')) {
-        window.open(href, '_blank');
+        location.href = href;
       } else {
         openExternalDialog(href);
       }
