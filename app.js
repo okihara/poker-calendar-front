@@ -901,20 +901,24 @@ function openExternalDialog(url) {
 
   const spinner = document.getElementById('externalDialogSpinner');
 
+  function closeDialog() {
+    if (iframe) iframe.src = '';
+    if (dialog.open) dialog.close();
+  }
+
   iframe?.addEventListener('load', () => {
     if (spinner && iframe.src) spinner.classList.add('hidden');
   });
 
-  closeBtn?.addEventListener('click', () => {
-    iframe.src = '';
-    dialog.close();
-  });
+  closeBtn?.addEventListener('click', closeDialog);
 
   dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) {
-      iframe.src = '';
-      dialog.close();
-    }
+    if (e.target === dialog) closeDialog();
+  });
+
+  // BFCache復元時にダイアログの状態をクリーンアップ
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) closeDialog();
   });
 })();
 
