@@ -902,12 +902,12 @@ function openExternalDialog(url) {
   const spinner = document.getElementById('externalDialogSpinner');
 
   function closeDialog() {
-    if (iframe) iframe.src = '';
+    if (iframe) iframe.src = 'about:blank';
     if (dialog.open) dialog.close();
   }
 
   iframe?.addEventListener('load', () => {
-    if (spinner && iframe.src) spinner.classList.add('hidden');
+    if (spinner && iframe.src && iframe.src !== 'about:blank') spinner.classList.add('hidden');
   });
 
   closeBtn?.addEventListener('click', closeDialog);
@@ -916,9 +916,10 @@ function openExternalDialog(url) {
     if (e.target === dialog) closeDialog();
   });
 
-  // BFCache復元時にダイアログの状態をクリーンアップ
-  window.addEventListener('pageshow', (e) => {
-    if (e.persisted) closeDialog();
+  // 外部サイトから戻った時にダイアログの状態をクリーンアップ
+  // BFCache復元(persisted=true)でも通常の再読み込みでも実行
+  window.addEventListener('pageshow', () => {
+    closeDialog();
   });
 })();
 
