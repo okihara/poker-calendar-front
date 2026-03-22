@@ -881,7 +881,9 @@ function bindEvents() {
 function openExternalDialog(url) {
   const dialog = document.getElementById('externalSiteDialog');
   const iframe = document.getElementById('externalDialogIframe');
+  const spinner = document.getElementById('externalDialogSpinner');
   if (!dialog || !iframe) return;
+  if (spinner) spinner.classList.remove('hidden');
   iframe.src = url;
   dialog.showModal();
 }
@@ -891,6 +893,12 @@ function openExternalDialog(url) {
   const iframe = document.getElementById('externalDialogIframe');
   const closeBtn = document.getElementById('externalDialogClose');
   if (!dialog) return;
+
+  const spinner = document.getElementById('externalDialogSpinner');
+
+  iframe?.addEventListener('load', () => {
+    if (spinner && iframe.src) spinner.classList.add('hidden');
+  });
 
   closeBtn?.addEventListener('click', () => {
     iframe.src = '';

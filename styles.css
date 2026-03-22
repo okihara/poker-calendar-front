@@ -762,10 +762,26 @@ body {
   background: rgba(0, 0, 0, 0.5);
 }
 
+.external-dialog-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0 0 48px 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.external-dialog-spinner.hidden {
+  display: none;
+}
+
 .external-dialog-iframe {
   width: 100%;
   flex: 1;
   border: none;
+  position: relative;
+  z-index: 2;
 }
 
 .external-dialog-close-bar {
