@@ -866,16 +866,46 @@ function bindEvents() {
       return;
     }
 
-    // カードタップで外部サイトへ遷移
+    // カードタップで外部サイトをダイアログ表示
     const card = e.target.closest('.mobile-card[data-href]');
     if (card) {
-      window.open(card.dataset.href, '_blank');
+      openExternalDialog(card.dataset.href);
     }
   });
 
   // URLクエリパラメータからフィルター状態を読み込む
   loadFiltersFromURL();
 }
+
+// 外部サイトダイアログ
+function openExternalDialog(url) {
+  const dialog = document.getElementById('externalSiteDialog');
+  const iframe = document.getElementById('externalDialogIframe');
+  const link = document.getElementById('externalDialogLink');
+  if (!dialog || !iframe || !link) return;
+  link.href = url;
+  iframe.src = url;
+  dialog.showModal();
+}
+
+(function initExternalDialog() {
+  const dialog = document.getElementById('externalSiteDialog');
+  const iframe = document.getElementById('externalDialogIframe');
+  const closeBtn = document.getElementById('externalDialogClose');
+  if (!dialog) return;
+
+  closeBtn?.addEventListener('click', () => {
+    iframe.src = '';
+    dialog.close();
+  });
+
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      iframe.src = '';
+      dialog.close();
+    }
+  });
+})();
 
 // Initialize
 initElements();

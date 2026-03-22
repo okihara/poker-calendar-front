@@ -744,6 +744,61 @@ body {
 
 }
 
+/* External site dialog */
+.external-dialog {
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  width: 94vw;
+  height: 90vh;
+  max-width: 900px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.external-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.external-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #1e293b;
+}
+
+.external-dialog-open-link {
+  color: #93c5fd;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.external-dialog-open-link:hover {
+  text-decoration: underline;
+}
+
+.external-dialog-close {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.external-dialog-close:hover {
+  color: #fff;
+}
+
+.external-dialog-iframe {
+  width: 100%;
+  height: calc(100% - 44px);
+  border: none;
+}
+
 /* Debug time bar */
 #debugTimeBar {
   display: none;

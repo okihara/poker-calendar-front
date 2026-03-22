@@ -121,6 +121,15 @@
     </div>
   </main>
 
+  <!-- 外部サイト表示モーダル -->
+  <dialog id="externalSiteDialog" class="external-dialog">
+    <div class="external-dialog-header">
+      <a id="externalDialogLink" href="" target="_blank" rel="noreferrer noopener" class="external-dialog-open-link">新しいタブで開く ↗</a>
+      <button type="button" id="externalDialogClose" class="external-dialog-close">✕</button>
+    </div>
+    <iframe id="externalDialogIframe" class="external-dialog-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+  </dialog>
+
   <footer class="app-footer">
     <small>
       データ元: <a href="https://docs.google.com/spreadsheets/" target="_blank" rel="noreferrer noopener">Googleスプレッドシート（公開CSV）</a>
