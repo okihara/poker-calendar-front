@@ -703,16 +703,8 @@ body {
     justify-content: center;
     padding: 0 12px;
     font-size: 24px;
-    color: #9ca3af;
+    color: #c9ced6;
     flex-shrink: 0;
-    text-decoration: none;
-    background: #f8f9fa;
-    border-left: 1px solid #e5e7eb;
-  }
-
-  .mobile-card-arrow:hover {
-    background: #e5e7eb;
-    color: var(--text);
   }
 
   /* レイト終了済みカードのスタイル */
