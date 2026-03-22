@@ -536,6 +536,14 @@ body {
     color: inherit;
   }
 
+  .mobile-card[data-href] {
+    cursor: pointer;
+  }
+
+  .mobile-card[data-href]:active {
+    opacity: 0.85;
+  }
+
 
   .mobile-card-left {
     display: flex;
@@ -695,16 +703,8 @@ body {
     justify-content: center;
     padding: 0 12px;
     font-size: 24px;
-    color: #9ca3af;
+    color: #c9ced6;
     flex-shrink: 0;
-    text-decoration: none;
-    background: #f8f9fa;
-    border-left: 1px solid #e5e7eb;
-  }
-
-  .mobile-card-arrow:hover {
-    background: #e5e7eb;
-    color: var(--text);
   }
 
   /* レイト終了済みカードのスタイル */
@@ -734,6 +734,70 @@ body {
     border-color: #eab308;
   }
 
+}
+
+/* External site dialog */
+.external-dialog {
+  padding: 0;
+  border: none;
+  border-radius: 12px 12px 0 0;
+  width: 94vw;
+  height: 90vh;
+  max-width: 900px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.external-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.external-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.external-dialog-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0 0 48px 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.external-dialog-spinner.hidden {
+  display: none;
+}
+
+.external-dialog-iframe {
+  width: 100%;
+  flex: 1;
+  border: none;
+  position: relative;
+  z-index: 2;
+}
+
+.external-dialog-close-bar {
+  appearance: none;
+  border: none;
+  width: 100%;
+  padding: 14px;
+  background: #1e293b;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.external-dialog-close-bar:hover {
+  background: #334155;
+}
+
+.external-dialog-close-bar:active {
+  background: #475569;
 }
 
 /* Debug time bar */

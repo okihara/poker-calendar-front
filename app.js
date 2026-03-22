@@ -508,7 +508,7 @@ function render() {
 
         <!-- スマホ用カード -->
         <td class="mobile-card-cell">
-          <div class="mobile-card">
+          <div class="mobile-card"${r.link ? ` data-href="${r.link}"` : ''}>
             <div class="mobile-card-left">
               <span class="mobile-card-date">${mobileDateStr}</span>
               <span class="mobile-card-start-time">${mobileStartTime}</span>
@@ -525,7 +525,7 @@ function render() {
                 ${multBadgeText ? `<span class="mobile-badge mobile-badge-mult ${multBadgeClass}">${multBadgeText}</span>` : ''}
               </div>
             </div>
-            ${r.link ? `<a href="${r.link}" class="mobile-card-arrow">›</a>` : ''}
+            ${r.link ? `<span class="mobile-card-arrow">›</span>` : ''}
           </div>
         </td>
       </tr>`;
@@ -850,23 +850,73 @@ function bindEvents() {
   // 店名クリックで検索
   el.tbody.addEventListener('click', (e) => {
     const shopLink = e.target.closest('.shop-name-link');
-    if (!shopLink) return;
-    const shopName = shopLink.dataset.shop;
-    if (shopName && el.searchInput) {
-      if (el.searchInput.value === shopName) {
-        el.searchInput.value = '';
-        if (clearSearchBtn) clearSearchBtn.style.display = 'none';
-      } else {
-        el.searchInput.value = shopName;
-        if (clearSearchBtn) clearSearchBtn.style.display = 'flex';
+    if (shopLink) {
+      e.stopPropagation();
+      const shopName = shopLink.dataset.shop;
+      if (shopName && el.searchInput) {
+        if (el.searchInput.value === shopName) {
+          el.searchInput.value = '';
+          if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+        } else {
+          el.searchInput.value = shopName;
+          if (clearSearchBtn) clearSearchBtn.style.display = 'flex';
+        }
+        update();
       }
-      update();
+      return;
+    }
+
+    // カードタップで外部サイトをダイアログ表示
+    const card = e.target.closest('.mobile-card[data-href]');
+    if (card) {
+      const href = card.dataset.href;
+      if (href.includes('pokerfans')) {
+        location.href = href;
+      } else {
+        openExternalDialog(href);
+      }
     }
   });
 
   // URLクエリパラメータからフィルター状態を読み込む
   loadFiltersFromURL();
 }
+
+// 外部サイトダイアログ
+function openExternalDialog(url) {
+  const dialog = document.getElementById('externalSiteDialog');
+  const iframe = document.getElementById('externalDialogIframe');
+  const spinner = document.getElementById('externalDialogSpinner');
+  if (!dialog || !iframe) return;
+  if (spinner) spinner.classList.remove('hidden');
+  iframe.src = url;
+  dialog.showModal();
+}
+
+(function initExternalDialog() {
+  const dialog = document.getElementById('externalSiteDialog');
+  const iframe = document.getElementById('externalDialogIframe');
+  const closeBtn = document.getElementById('externalDialogClose');
+  if (!dialog) return;
+
+  const spinner = document.getElementById('externalDialogSpinner');
+
+  iframe?.addEventListener('load', () => {
+    if (spinner && iframe.src) spinner.classList.add('hidden');
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    iframe.src = '';
+    dialog.close();
+  });
+
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      iframe.src = '';
+      dialog.close();
+    }
+  });
+})();
 
 // Initialize
 initElements();
