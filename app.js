@@ -869,7 +869,12 @@ function bindEvents() {
     // カードタップで外部サイトをダイアログ表示
     const card = e.target.closest('.mobile-card[data-href]');
     if (card) {
-      openExternalDialog(card.dataset.href);
+      const href = card.dataset.href;
+      if (href.includes('pokerfans')) {
+        window.open(href, '_blank');
+      } else {
+        openExternalDialog(href);
+      }
     }
   });
 
