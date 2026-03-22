@@ -536,6 +536,14 @@ body {
     color: inherit;
   }
 
+  .mobile-card[data-href] {
+    cursor: pointer;
+  }
+
+  .mobile-card[data-href]:active {
+    opacity: 0.85;
+  }
+
 
   .mobile-card-left {
     display: flex;
