@@ -100,7 +100,7 @@ body {
 .area-toggle-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
 }
 .filter-label {
@@ -115,7 +115,7 @@ body {
   background: #ffffff;
   color: var(--text);
   border-radius: 6px;
-  padding: 4px 14px;
+  padding: 3px 10px;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.2px;
