@@ -744,6 +744,14 @@ function updateURLFromFilters() {
   window.history.replaceState({}, '', newURL);
 }
 
+// 絞り込みボタン操作時に検索フォームをクリアする
+function clearSearchForm() {
+  if (!el.searchInput || !el.searchInput.value) return;
+  el.searchInput.value = '';
+  const clearSearchBtn = document.getElementById('clearSearch');
+  if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+}
+
 function bindEvents() {
   el.table.addEventListener("click", onHeaderClick);
 
@@ -769,6 +777,7 @@ function bindEvents() {
       if (!isActive) {
         btn.classList.add('active');
       }
+      clearSearchForm();
       update();
     });
   }
@@ -783,6 +792,7 @@ function bindEvents() {
       if (!isActive) {
         btn.classList.add('active');
       }
+      clearSearchForm();
       update();
     });
   }
@@ -798,6 +808,7 @@ function bindEvents() {
       if (!isActive) {
         btn.classList.add('active');
       }
+      clearSearchForm();
       update();
     });
   }
