@@ -290,9 +290,9 @@ function getBaseFilteredRows() {
 
   if (activeAreas.length > 0) {
     rows = rows.filter(r => {
-      // 全カラムのどこかにエリア名が含まれていれば真
+      // title等に他エリア名が含まれると誤マッチするため、エリア・住所・店名のみで判定
       return activeAreas.some(area => {
-        return Object.values(r).some(value => {
+        return [r.area, r.address, r.shop_name].some(value => {
           if (value == null) return false;
           return String(value).toLowerCase().includes(area.toLowerCase());
         });
