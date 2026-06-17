@@ -30,9 +30,10 @@ body {
   margin-bottom: 16px;
 }
 
-/* High Roller toggle button */
+/* High Roller toggle button (日付タブの右に配置) */
 .high-roller-toggle {
   margin-left: auto;
+  margin-bottom: 8px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -42,8 +43,8 @@ body {
   background: rgba(255, 255, 255, 0.1);
   color: #ffd700;
   border-radius: 999px;
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 6px 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.4px;
   white-space: nowrap;
@@ -73,12 +74,9 @@ body.high-roller .header-tagline {
 }
 
 @media (max-width: 480px) {
-  .header-content {
-    flex-wrap: wrap;
-  }
   .high-roller-toggle {
-    padding: 6px 12px;
-    font-size: 13px;
+    padding: 5px 11px;
+    font-size: 12px;
   }
 }
 .header-logo-wrapper {
@@ -119,6 +117,7 @@ body.high-roller .header-tagline {
 }
 .date-tabs {
   display: flex;
+  align-items: center;
   gap: 0;
 }
 .date-tab {
