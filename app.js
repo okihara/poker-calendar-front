@@ -267,8 +267,17 @@ function setStatus(msg, showSpinner = false) {
 
 // area toggles: buttons with .area-btn.active represent enabled filters
 
+// エリア判定: title等に他エリア名が含まれると誤マッチするため、エリア・住所・店名のみで判定
+function rowMatchesArea(r, area) {
+  return [r.area, r.address, r.shop_name].some(value => {
+    if (value == null) return false;
+    return String(value).toLowerCase().includes(area.toLowerCase());
+  });
+}
+
 // 倍率フィルター以外の全フィルターを適用した行を返す
-function getBaseFilteredRows() {
+// options.skipArea: エリアフィルターを適用しない（エリア別件数の集計用）
+function getBaseFilteredRows(options = {}) {
   let rows = state.data.slice();
 
   // ハイローラーモード: バイイン(参加費)が10,000以上のみ
@@ -294,20 +303,17 @@ function getBaseFilteredRows() {
   }
 
   // Area filter
-  const activeAreas = Array.from(el.areaToggles?.querySelectorAll('.area-btn.active') || [])
-    .map(b => b.dataset.area)
-    .filter(a => !!a);
+  if (!options.skipArea) {
+    const activeAreas = Array.from(el.areaToggles?.querySelectorAll('.area-btn.active') || [])
+      .map(b => b.dataset.area)
+      .filter(a => !!a);
 
-  if (activeAreas.length > 0) {
-    rows = rows.filter(r => {
-      // title等に他エリア名が含まれると誤マッチするため、エリア・住所・店名のみで判定
-      return activeAreas.some(area => {
-        return [r.area, r.address, r.shop_name].some(value => {
-          if (value == null) return false;
-          return String(value).toLowerCase().includes(area.toLowerCase());
-        });
+    if (activeAreas.length > 0) {
+      rows = rows.filter(r => {
+        // title等に他エリア名が含まれると誤マッチするため、エリア・住所・店名のみで判定
+        return activeAreas.some(area => rowMatchesArea(r, area));
       });
-    });
+    }
   }
 
   // Title filter
@@ -405,6 +411,18 @@ function updateMultiplierCounts() {
     const label = multLabels[key] || key;
     const count = counts[key] || 0;
     btn.textContent = `${label} (${count})`;
+  });
+}
+
+// エリアフィルターボタンに件数を表示
+function updateAreaCounts() {
+  if (!el.areaToggles) return;
+  // エリア以外のフィルターを適用した行を対象に、各エリアの件数を集計
+  const rows = getBaseFilteredRows({ skipArea: true });
+  el.areaToggles.querySelectorAll('.area-btn[data-area]').forEach(btn => {
+    const area = btn.dataset.area;
+    const count = rows.reduce((acc, r) => acc + (rowMatchesArea(r, area) ? 1 : 0), 0);
+    btn.textContent = `${area} (${count})`;
   });
 }
 
@@ -557,6 +575,7 @@ function update() {
   updateSortIndicator();
   render();
   updateCount();
+  updateAreaCounts();
   updateMultiplierCounts();
   updateURLFromFilters();
 }
