@@ -29,6 +29,58 @@ body {
   gap: 16px;
   margin-bottom: 16px;
 }
+
+/* High Roller toggle button */
+.high-roller-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  cursor: pointer;
+  border: 1.5px solid rgba(255, 215, 0, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffd700;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.high-roller-toggle:hover {
+  background: rgba(255, 215, 0, 0.18);
+}
+.high-roller-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+.high-roller-toggle[aria-pressed="true"] {
+  background: linear-gradient(135deg, #ffd700 0%, #f0b90b 100%);
+  border-color: #ffd700;
+  color: #2a2000;
+  box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+}
+
+/* High Roller mode: golden header theme */
+body.high-roller .app-header {
+  background: linear-gradient(135deg, #3a2e00 0%, #6b5200 50%, #8a6d00 100%);
+}
+body.high-roller .header-tagline {
+  color: #ffd700;
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    flex-wrap: wrap;
+  }
+  .high-roller-toggle {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
 .header-logo-wrapper {
   width: 72px;
   height: 72px;

@@ -87,12 +87,17 @@ function _initDebugTimeFromURL() {
   }
 }
 
+// ハイローラーモード: バイイン(参加費)10,000以上のみ表示
+const HIGH_ROLLER_KEY = 'highRollerMode';
+const HIGH_ROLLER_MIN_FEE = 10000;
+
 // State
 const state = {
   raw: [],
   data: [], // normalized rows
   filtered: [],
   sort: { key: "start_time", dir: "asc" },
+  highRoller: false,
 };
 
 // Elements (initialized after DOM ready)
@@ -265,6 +270,11 @@ function setStatus(msg, showSpinner = false) {
 // 倍率フィルター以外の全フィルターを適用した行を返す
 function getBaseFilteredRows() {
   let rows = state.data.slice();
+
+  // ハイローラーモード: バイイン(参加費)が10,000以上のみ
+  if (state.highRoller) {
+    rows = rows.filter(r => r.entry_fee != null && r.entry_fee >= HIGH_ROLLER_MIN_FEE);
+  }
 
   // Date filter (today / tomorrow)
   if (el.dateToggles) {
@@ -752,8 +762,38 @@ function clearSearchForm() {
   if (clearSearchBtn) clearSearchBtn.style.display = 'none';
 }
 
+// ハイローラーモードのUI状態を反映（ボタン・ヘッダー色）
+function applyHighRollerUI() {
+  document.body.classList.toggle('high-roller', state.highRoller);
+  const btn = document.getElementById('highRollerToggle');
+  if (btn) btn.setAttribute('aria-pressed', state.highRoller ? 'true' : 'false');
+}
+
+// localStorageから状態を復元
+function loadHighRollerState() {
+  try {
+    state.highRoller = localStorage.getItem(HIGH_ROLLER_KEY) === '1';
+  } catch (e) {
+    state.highRoller = false;
+  }
+  applyHighRollerUI();
+}
+
 function bindEvents() {
   el.table.addEventListener("click", onHeaderClick);
+
+  // ハイローラーモード切り替え
+  const highRollerToggle = document.getElementById('highRollerToggle');
+  if (highRollerToggle) {
+    highRollerToggle.addEventListener('click', () => {
+      state.highRoller = !state.highRoller;
+      try {
+        localStorage.setItem(HIGH_ROLLER_KEY, state.highRoller ? '1' : '0');
+      } catch (e) { /* localStorage不可でも動作継続 */ }
+      applyHighRollerUI();
+      update();
+    });
+  }
 
   // Bind date tabs (today / tomorrow)
   if (el.dateToggles) {
@@ -936,5 +976,6 @@ function openExternalDialog(url) {
 // Initialize
 initElements();
 _initDebugTimeFromURL();
+loadHighRollerState();
 bindEvents();
 fetchAndInit();
