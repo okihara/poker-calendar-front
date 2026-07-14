@@ -258,6 +258,7 @@ function normalizeRow(row) {
     late_reg_dt: lateRegDT,
     late_reg_ts: lateRegDT ? lateRegDT.getTime() : -Infinity,
     multiplier,
+    is_satellite: !!isSatellite,
   };
 }
 
@@ -531,7 +532,7 @@ function render() {
         <td class="pc-only" data-label="レイト">${lateStr}</td>
         <td class="pc-only" data-label="エリア">${r.area || ""}</td>
         <td class="pc-only" data-label="店名"><span class="shop-name-link" data-shop="${r.shop_name || ""}">${r.shop_name || ""}</span></td>
-        <td class="pc-only" data-label="タイトル">${titleContent}</td>
+        <td class="pc-only" data-label="タイトル">${r.is_satellite ? '<span class="satellite-label">サテ</span>' : ''}${titleContent}</td>
         <td class="pc-only number" data-label="参加費">${feeStr}</td>
         <td class="pc-only number" data-label="アドオン">${addOnStr}</td>
         <td class="pc-only number" data-label="プライズ総額">${totalPrizeStr}</td>
@@ -554,6 +555,7 @@ function render() {
                 ${totalPrizeStr !== "不明" ? `<span>賞金: ${totalPrizeStr}</span>` : ''}
               </div>
               <div class="mobile-card-badges">
+                ${r.is_satellite ? `<span class="mobile-badge mobile-badge-satellite">サテ</span>` : ''}
                 ${multBadgeText ? `<span class="mobile-badge mobile-badge-mult ${multBadgeClass}">${multBadgeText}</span>` : ''}
               </div>
             </div>
