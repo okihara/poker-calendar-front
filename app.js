@@ -224,10 +224,14 @@ function normalizeRow(row) {
   const entry_fee = parseIntSafe(row.entry_fee);
   const add_on = parseIntSafe(row.add_on);
   const guaranteed_amount = parseIntSafe(row.guaranteed_amount);
-  // Prefer prize_list aggregation if available; fallback to total_prize field
+  // Prefer prize_list aggregation if available; fallback to total_prize field,
+  // then to guaranteed_amount when neither yields a positive amount
   const total_from_list = parsePrizeListSum(row.prize_list || row.prize_text);
   const total_prize_field = parseIntSafe(row.total_prize);
-  const total_prize = total_from_list != null ? total_from_list : total_prize_field;
+  const total_prize_raw = total_from_list != null ? total_from_list : total_prize_field;
+  const total_prize = (total_prize_raw != null && total_prize_raw > 0)
+    ? total_prize_raw
+    : guaranteed_amount;
 
   const dateOnly = parseDateTimeJP(row.date);
   const startDT = parseDateTimeJP(row.start_time);
