@@ -108,10 +108,16 @@ const el = {
   table: null,
   dateToggles: null,
   areaToggles: null,
+  areaSelect: null,
   multToggles: null,
   titleToggles: null,
   searchInput: null,
 };
+
+// エリアボタン: トナメ数上位N件をボタン表示、残りはプルダウン
+const TOP_AREA_COUNT = 5;
+// URLパラメータで指定されたエリア（ボタン生成前に読み込まれるため保留しておく）
+let _pendingAreaFromURL = null;
 
 function initElements() {
   el.status = document.getElementById("status");
@@ -120,6 +126,7 @@ function initElements() {
   el.table = document.getElementById("table");
   el.dateToggles = document.getElementById("dateToggles");
   el.areaToggles = document.getElementById("areaToggles");
+  el.areaSelect = document.getElementById("areaSelect");
   el.multToggles = document.getElementById("multToggles");
   el.titleToggles = document.getElementById("titleToggles");
 }
@@ -424,11 +431,85 @@ function updateAreaCounts() {
   if (!el.areaToggles) return;
   // エリア以外のフィルターを適用した行を対象に、各エリアの件数を集計
   const rows = getBaseFilteredRows({ skipArea: true });
+  const countFor = (area) => rows.reduce((acc, r) => acc + (rowMatchesArea(r, area) ? 1 : 0), 0);
   el.areaToggles.querySelectorAll('.area-btn[data-area]').forEach(btn => {
     const area = btn.dataset.area;
-    const count = rows.reduce((acc, r) => acc + (rowMatchesArea(r, area) ? 1 : 0), 0);
-    btn.textContent = `${area} (${count})`;
+    btn.textContent = `${area} (${countFor(area)})`;
   });
+  // プルダウンの選択肢にも件数を表示
+  if (el.areaSelect) {
+    Array.from(el.areaSelect.options).forEach(opt => {
+      if (!opt.value) return; // プレースホルダーはそのまま
+      opt.textContent = `${opt.value} (${countFor(opt.value)})`;
+    });
+  }
+}
+
+// データ内のエリアをトナメ数の多い順に集計し、上位はボタン・残りはプルダウンで表示
+function buildAreaButtons() {
+  if (!el.areaToggles || !el.areaSelect) return;
+
+  const counts = new Map();
+  state.data.forEach(r => {
+    const area = (r.area || "").trim();
+    if (!area) return;
+    counts.set(area, (counts.get(area) || 0) + 1);
+  });
+  const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+  const topAreas = sorted.slice(0, TOP_AREA_COUNT).map(([area]) => area);
+  const restAreas = sorted.slice(TOP_AREA_COUNT).map(([area]) => area);
+
+  // 再構築のため既存の動的ボタンを削除（アクティブ状態は保持して復元）
+  const prevActive = el.areaToggles.querySelector('.area-btn.active')?.dataset.area || null;
+  el.areaToggles.querySelectorAll('.area-btn').forEach(b => b.remove());
+
+  topAreas.forEach(area => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'area-btn';
+    btn.dataset.area = area;
+    btn.textContent = area;
+    el.areaToggles.insertBefore(btn, el.areaSelect);
+  });
+
+  el.areaSelect.innerHTML = '';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = 'その他';
+  el.areaSelect.appendChild(placeholder);
+  restAreas.forEach(area => {
+    const opt = document.createElement('option');
+    opt.value = area;
+    opt.textContent = area;
+    el.areaSelect.appendChild(opt);
+  });
+
+  const areaToActivate = prevActive || _pendingAreaFromURL;
+  _pendingAreaFromURL = null;
+  if (areaToActivate) activateArea(areaToActivate);
+}
+
+// 指定エリアを選択状態にする。上位ボタンになければ一時ボタンを生成して表示
+function activateArea(area) {
+  if (!el.areaToggles) return;
+  el.areaToggles.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+  removeTempAreaButton();
+  let btn = el.areaToggles.querySelector(`.area-btn[data-area="${CSS.escape(area)}"]`);
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'area-btn';
+    btn.dataset.area = area;
+    btn.dataset.fromSelect = '1';
+    btn.textContent = area;
+    el.areaToggles.insertBefore(btn, el.areaSelect);
+  }
+  btn.classList.add('active');
+}
+
+// プルダウン選択で一時的に表示していたボタンを削除
+function removeTempAreaButton() {
+  el.areaToggles?.querySelectorAll('.area-btn[data-from-select]').forEach(b => b.remove());
 }
 
 function sortRows() {
@@ -634,6 +715,8 @@ async function fetchAndInit() {
           state.raw = results.data || [];
           state.data = state.raw.map(normalizeRow);
 
+          buildAreaButtons();
+
           // 初期ソート: start_time 昇順（URLパラメータで指定がない場合のみ）
           if (!state.sort.key) {
             state.sort = { key: "start_time", dir: "asc" };
@@ -666,13 +749,10 @@ function loadFiltersFromURL() {
     }
   }
 
-  // エリア
+  // エリア（ボタンはデータ読み込み後に生成されるため、保留して buildAreaButtons で適用）
   const area = params.get('area');
-  if (area && el.areaToggles) {
-    const targetBtn = el.areaToggles.querySelector(`.area-btn[data-area="${area}"]`);
-    if (targetBtn) {
-      targetBtn.classList.add('active');
-    }
+  if (area) {
+    _pendingAreaFromURL = area;
   }
 
   // 倍率
@@ -842,6 +922,20 @@ function bindEvents() {
       if (!isActive) {
         btn.classList.add('active');
       }
+      // プルダウン由来の一時ボタンは、非アクティブになったら削除
+      el.areaToggles.querySelectorAll('.area-btn[data-from-select]:not(.active)').forEach(b => b.remove());
+      clearSearchForm();
+      update();
+    });
+  }
+
+  // プルダウンでエリア選択: 選んだエリアを一時ボタンとして表示してアクティブに
+  if (el.areaSelect) {
+    el.areaSelect.addEventListener('change', () => {
+      const area = el.areaSelect.value;
+      if (!area) return;
+      activateArea(area);
+      el.areaSelect.value = ''; // プレースホルダーに戻す（メニューとして使う）
       clearSearchForm();
       update();
     });

@@ -55,15 +55,10 @@
   <section class="controls">
     <div class="area-toggle-group" id="areaToggles" aria-label="エリアフィルター">
       <span class="filter-label">エリア</span>
-      <button type="button" class="area-btn" data-area="六本木">六本木</button>
-      <button type="button" class="area-btn" data-area="渋谷">渋谷</button>
-      <button type="button" class="area-btn" data-area="新宿">新宿</button>
-      <button type="button" class="area-btn" data-area="秋葉原">秋葉原</button>
-      <button type="button" class="area-btn" data-area="新橋">新橋</button>
-      <button type="button" class="area-btn" data-area="赤坂">赤坂</button>
-      <button type="button" class="area-btn" data-area="中野">中野</button>
-      <button type="button" class="area-btn" data-area="上野">上野</button>
-      <button type="button" class="area-btn" data-area="池袋">池袋</button>
+      <!-- エリアボタンはデータ読み込み後に動的生成される -->
+      <select id="areaSelect" class="area-select" aria-label="その他のエリア">
+        <option value="">その他</option>
+      </select>
     </div>
     <div class="area-toggle-group" id="multToggles" aria-label="倍率フィルター" style="margin-top:8px;">
       <span class="filter-label">賞金総額比率</span>
