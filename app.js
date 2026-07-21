@@ -1,6 +1,6 @@
 // Vercel Blob 上の事前生成JSON（スクレイパーが1日2回更新）。
 // 取得失敗時は従来のスプレッドシート公開CSVにフォールバックする。
-const JSON_URL = "";  // 初回アップロード後にBlobのURLを設定する
+const JSON_URL = "https://y3gbbf6hwsj8orxh.public.blob.vercel-storage.com/tournaments.json";
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRfrIH1vQwDxdZqaoE8t7Q33O5Hxig_18xijgI77yRhfgGUOEUsioJ9zD08hoNuMklZXOxqmmejfq/pub?gid=1600443875&single=true&output=csv";
 
 // Debug time override (hidden feature)
