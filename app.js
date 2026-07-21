@@ -1,3 +1,6 @@
+// Vercel Blob 上の事前生成JSON（スクレイパーが1日2回更新）。
+// 取得失敗時は従来のスプレッドシート公開CSVにフォールバックする。
+const JSON_URL = "";  // 初回アップロード後にBlobのURLを設定する
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRfrIH1vQwDxdZqaoE8t7Q33O5Hxig_18xijgI77yRhfgGUOEUsioJ9zD08hoNuMklZXOxqmmejfq/pub?gid=1600443875&single=true&output=csv";
 
 // Debug time override (hidden feature)
@@ -623,31 +626,48 @@ async function fetchAndInit() {
   
   setStatus("読み込み中...", true);
   try {
-    await new Promise((resolve, reject) => {
-      Papa.parse(CSV_URL, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          state.raw = results.data || [];
-          state.data = state.raw.map(normalizeRow);
+    state.raw = await fetchRows();
+    state.data = state.raw.map(normalizeRow);
 
-          // 初期ソート: start_time 昇順（URLパラメータで指定がない場合のみ）
-          if (!state.sort.key) {
-            state.sort = { key: "start_time", dir: "asc" };
-          }
+    // 初期ソート: start_time 昇順（URLパラメータで指定がない場合のみ）
+    if (!state.sort.key) {
+      state.sort = { key: "start_time", dir: "asc" };
+    }
 
-          update();
-          setStatus("");
-          resolve();
-        },
-        error: (err) => reject(err),
-      });
-    });
+    update();
+    setStatus("");
   } catch (e) {
     console.error(e);
     setStatus("読み込みに失敗しました。ネットワークやCSVの公開設定を確認してください。");
   }
+}
+
+// Vercel Blob上のJSONを優先して取得し、失敗時はスプレッドシート公開CSVにフォールバック
+async function fetchRows() {
+  if (JSON_URL) {
+    try {
+      const res = await fetch(JSON_URL);
+      if (!res.ok) throw new Error(`JSON fetch failed: HTTP ${res.status}`);
+      const json = await res.json();
+      if (!Array.isArray(json.tournaments)) throw new Error("JSON format error: tournaments missing");
+      return json.tournaments;
+    } catch (e) {
+      console.warn("JSONの取得に失敗したためCSVにフォールバックします", e);
+    }
+  }
+  return fetchCsvRows();
+}
+
+function fetchCsvRows() {
+  return new Promise((resolve, reject) => {
+    Papa.parse(CSV_URL, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => resolve(results.data || []),
+      error: (err) => reject(err),
+    });
+  });
 }
 
 // URLクエリパラメータからフィルター状態を読み込む
