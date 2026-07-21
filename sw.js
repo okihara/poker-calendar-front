@@ -1,4 +1,4 @@
-const CACHE_NAME = 'poker-search-v1';
+const CACHE_NAME = 'poker-search-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -34,8 +34,18 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Network-first for Google Sheets CSV and external APIs
-  if (url.hostname.includes('google') || url.hostname.includes('googleapis')) {
+  // Only handle http(s) GET requests. Skip chrome-extension:// and other
+  // unsupported schemes that the Cache API cannot store.
+  if (event.request.method !== 'GET' || !url.protocol.startsWith('http')) {
+    return;
+  }
+
+  // Network-first for tournament data (Vercel Blob JSON / Google Sheets CSV)
+  if (
+    url.hostname.includes('google') ||
+    url.hostname.includes('googleapis') ||
+    url.hostname.endsWith('vercel-storage.com')
+  ) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {

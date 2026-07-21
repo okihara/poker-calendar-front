@@ -22,8 +22,8 @@ This is a minimal frontend application for displaying and filtering poker tourna
 - **styles.css**: Responsive CSS with mobile-first card layout and desktop table view
 
 ### Data Flow
-1. **CSV Fetching**: Uses PapaParse (CDN) to fetch and parse Google Sheets CSV
-2. **Normalization**: Raw CSV data is normalized with date/time parsing and multiplier calculations
+1. **Data Fetching**: Fetches pre-generated JSON from Vercel Blob (`JSON_URL` in app.js, uploaded twice daily by the poker-calender scraper repo). Falls back to Google Sheets CSV via PapaParse (CDN) if `JSON_URL` is empty or the fetch fails
+2. **Normalization**: Raw row data is normalized with date/time parsing and multiplier calculations
 3. **State Management**: Simple global state object with raw data, normalized data, filtered results, and sort state
 4. **Filtering**: Multiple filter types (area, multiplier range, title keywords, late registration status)
 5. **Rendering**: Dynamic DOM updates with responsive table/card layouts
