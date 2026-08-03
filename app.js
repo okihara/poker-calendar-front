@@ -94,6 +94,13 @@ function _initDebugTimeFromURL() {
 const HIGH_ROLLER_KEY = 'highRollerMode';
 const HIGH_ROLLER_MIN_FEE = 10000;
 
+// 締切間近フィルター: レイト締切までの残り時間がこれ以内のものだけ表示
+const CLOSING_SOON_MS = 60 * 60 * 1000;
+
+function isClosingSoon(r, now) {
+  return !!r.late_reg_dt && r.late_reg_dt >= now && (r.late_reg_dt - now) <= CLOSING_SOON_MS;
+}
+
 // State
 const state = {
   raw: [],
@@ -366,6 +373,16 @@ function getBaseFilteredRows(options = {}) {
     });
   }
 
+  // 締切間近フィルター（レイト締切まで1時間以内）
+  // options.skipClosingSoon: 締切フィルターを適用しない（ボタンの件数集計用）
+  if (!options.skipClosingSoon) {
+    const closingSoonBtn = document.getElementById('closingSoonBtn');
+    if (closingSoonBtn && closingSoonBtn.classList.contains('active')) {
+      const now = getNow();
+      rows = rows.filter(r => isClosingSoon(r, now));
+    }
+  }
+
   return rows;
 }
 
@@ -420,6 +437,16 @@ function updateMultiplierCounts() {
     const count = counts[key] || 0;
     btn.textContent = `${label} (${count})`;
   });
+}
+
+// 締切間近ボタンに件数を表示
+function updateClosingSoonCount() {
+  const btn = document.getElementById('closingSoonBtn');
+  if (!btn) return;
+  const now = getNow();
+  const rows = getBaseFilteredRows({ skipClosingSoon: true });
+  const count = rows.reduce((acc, r) => acc + (isClosingSoon(r, now) ? 1 : 0), 0);
+  btn.textContent = `1時間以内 (${count})`;
 }
 
 // エリアフィルターボタンに件数を表示
@@ -586,6 +613,7 @@ function update() {
   updateCount();
   updateAreaCounts();
   updateMultiplierCounts();
+  updateClosingSoonCount();
   updateURLFromFilters();
 }
 
@@ -723,6 +751,13 @@ function loadFiltersFromURL() {
     }
   }
 
+  // 締切1時間以内
+  const closing = params.get('closing');
+  const closingSoonBtn = document.getElementById('closingSoonBtn');
+  if (closing === '1' && closingSoonBtn) {
+    closingSoonBtn.classList.add('active');
+  }
+
   // レイト過ぎ表示
   const showLate = params.get('showLate');
   const showLateExpiredCheckbox = document.getElementById('showLateExpired');
@@ -778,6 +813,12 @@ function updateURLFromFilters() {
   // 検索
   if (el.searchInput && el.searchInput.value.trim()) {
     params.set('search', el.searchInput.value.trim());
+  }
+
+  // 締切1時間以内
+  const closingSoonBtn = document.getElementById('closingSoonBtn');
+  if (closingSoonBtn && closingSoonBtn.classList.contains('active')) {
+    params.set('closing', '1');
   }
 
   // レイト過ぎ表示
@@ -893,6 +934,16 @@ function bindEvents() {
       if (!isActive) {
         btn.classList.add('active');
       }
+      clearSearchForm();
+      update();
+    });
+  }
+
+  // Bind closing soon toggle (締切1時間以内)
+  const closingSoonBtn = document.getElementById('closingSoonBtn');
+  if (closingSoonBtn) {
+    closingSoonBtn.addEventListener('click', () => {
+      closingSoonBtn.classList.toggle('active');
       clearSearchForm();
       update();
     });
