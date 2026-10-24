@@ -23,7 +23,7 @@ Vite + React + TypeScript + Tailwind CSS v4. Single page, no router, no global s
 ### UI
 - Header (logo, title, ♦10K+ high-roller toggle saved in localStorage) → sticky `Toolbar` (今日/明日 tabs, 絞り込み button, 締切1時間以内 quick chip, applied-filter chips with ×) → list/table
 - `FilterSheet`: native `<dialog>`; changes apply immediately, the bottom button only closes it
-- Multiplier tier colors live in `MULT_COLORS` (`Badges.tsx`): green 10x / blue 20x / violet 30x / rose 40x / amber 50x+
+- Multiplier emphasis lives in `Badges.tsx` (green 10x / blue 20x / violet 30x / rose 40x / amber 50x+), graduated by tier: `MULT_STYLES` (badge: tinted for 10x, solid + larger for 20x+; row: left color bar, plus background tint for 30x+ via `multRowClass`) and `MULT_COLORS` (filter chips)
 - Tapping a shop name toggles a search for that shop; tapping a row opens the link (pokerfans in a new tab, others in `ExternalDialog` iframe)
 
 ### Notes

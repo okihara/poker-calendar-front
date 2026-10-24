@@ -1,7 +1,7 @@
 import type { Tournament } from "../lib/data";
 import { isClosingSoon, isExpired, type Sort, type SortKey } from "../lib/filters";
 import { fmtTime } from "../lib/time";
-import { MultBadge, SatelliteBadge } from "./Badges";
+import { MultBadge, SatelliteBadge, multRowClass } from "./Badges";
 
 type Props = {
   rows: Tournament[];
@@ -48,7 +48,7 @@ export function TournamentTable({ rows, now, sort, onSort, onOpen, onShopClick }
         </thead>
         <tbody className="divide-y divide-slate-100">
           {rows.map((t) => (
-            <tr key={t.id + t.title} className={`align-top hover:bg-slate-50 ${isExpired(t, now) ? "opacity-45" : ""}`}>
+            <tr key={t.id + t.title} className={`align-top ${multRowClass(t.multiplier)} hover:brightness-[0.97] ${isExpired(t, now) ? "opacity-45" : ""}`}>
               <td className="whitespace-nowrap px-3 py-2.5 font-semibold tabular-nums">{fmtTime(t.start)}</td>
               <td className={`whitespace-nowrap px-3 py-2.5 tabular-nums ${isClosingSoon(t, now) ? "font-bold text-red-600" : "text-orange-600"}`}>
                 {fmtTime(t.lateReg)}

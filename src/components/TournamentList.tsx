@@ -1,7 +1,7 @@
 import type { Tournament } from "../lib/data";
 import { isClosingSoon, isExpired } from "../lib/filters";
 import { fmtHM } from "../lib/time";
-import { MultBadge, SatelliteBadge } from "./Badges";
+import { MultBadge, SatelliteBadge, multRowClass } from "./Badges";
 
 type Props = {
   rows: Tournament[];
@@ -25,7 +25,7 @@ export function TournamentList({ rows, now, onOpen, onShopClick }: Props) {
           <li
             key={t.id + t.title}
             onClick={() => t.link && onOpen(t)}
-            className={`flex gap-3 px-4 py-2.5 ${t.link ? "cursor-pointer active:bg-slate-100" : ""} ${isExpired(t, now) ? "opacity-45" : ""}`}
+            className={`flex gap-3 py-2.5 pl-3 pr-4 ${multRowClass(t.multiplier)} ${t.link ? "cursor-pointer active:bg-slate-100" : ""} ${isExpired(t, now) ? "opacity-45" : ""}`}
           >
             <div className="w-12 shrink-0 pt-0.5 text-center leading-tight tabular-nums">
               <div className="text-[17px] font-bold">{fmtHM(t.start)}</div>
