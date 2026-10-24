@@ -17,11 +17,13 @@ Vite + React + TypeScript + Tailwind CSS v4. Single page, no router, no global s
 ### Data Flow
 1. **Fetch** (`src/lib/data.ts`): JSON from Vercel Blob (`JSON_URL`, uploaded twice daily by the poker-calender scraper repo). Falls back to the Google Sheets CSV via PapaParse (dynamic import) if the fetch fails
 2. **Normalize** (`normalizeRow`): raw string rows → `Tournament` (dates parsed, fees as numbers, `multiplier` = total prize / (entry fee + add-on), `searchText` for keyword search)
-3. **Filter / sort** (`src/lib/filters.ts`): pure functions over a `Filters` object; `filterCounts()` computes the per-chip counts. Filters sync to URL query params (`area`, `mult`, `title`, `search`, `closing`, `showLate`, `sortMult`, `date`) for sharing
+3. **Filter / sort** (`src/lib/filters.ts`): pure functions over a `Filters` object; `filterCounts()` computes the per-chip counts. Filters sync to URL query params (`area`, `mult`, `title`, `search`, `closing`, `showLate`, `sort`=mult|late, `date`; legacy `sortMult=1` is still read) for sharing
 4. **Render**: `TournamentList` (mobile, < 768px / `md`) and `TournamentTable` (PC) render the same rows
 
 ### UI
-- Header (logo, title, ♦10K+ high-roller toggle saved in localStorage) → sticky `Toolbar` (今日/明日 tabs, 絞り込み button, 締切1時間以内 quick chip, applied-filter chips with ×) → list/table
+- Header (logo, title, ♦10K+ high-roller toggle saved in localStorage) → sticky `Toolbar` (今日/明日 tabs, sort tabs 開始順/倍率順/締切が近い from `SORT_TABS`, 絞り込み button, 締切1時間以内 quick chip, applied-filter chips with ×) → list/table
+- Favorite shops (★ on each row, localStorage `favoriteShops`) are grouped into a "★ お気に入りの店" section at the top; `App.tsx` builds `sections` and a shared `RowContext` (`components/rowProps.ts`) for both list and table
+- Row labels: LIVE = started and late reg still open (`isLive`); 🏆 最高倍率 = highest multiplier among the shown, non-expired rows (`bestKey`)
 - `FilterSheet`: native `<dialog>`; changes apply immediately, the bottom button only closes it
 - Multiplier emphasis lives in `Badges.tsx` (green 10x / blue 20x / violet 30x / rose 40x / amber 50x+), graduated by tier: `MULT_STYLES` (badge: tinted for 10x, solid + larger for 20x+; row: left color bar, plus background tint for 30x+ via `multRowClass`) and `MULT_COLORS` (filter chips)
 - Tapping a shop name toggles a search for that shop; tapping a row opens the link (pokerfans in a new tab, others in `ExternalDialog` iframe)

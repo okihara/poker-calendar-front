@@ -1,13 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import {
-  AREAS,
-  DEFAULT_SORT,
-  KEYWORDS,
-  MULT_SORT,
-  MULT_TIERS,
-  type Filters,
-  type filterCounts,
-} from "../lib/filters";
+import { AREAS, KEYWORDS, MULT_TIERS, type Filters, type filterCounts } from "../lib/filters";
 import { MULT_COLORS } from "./Badges";
 import { Chip } from "./Chip";
 
@@ -50,8 +42,6 @@ export function FilterSheet({ open, onClose, filters: f, onChange, onReset, coun
     if (open && !d.open) d.showModal();
     if (!open && d.open) d.close();
   }, [open]);
-
-  const isMultSort = f.sort.key === MULT_SORT.key && f.sort.dir === MULT_SORT.dir;
 
   return (
     <dialog
@@ -99,11 +89,6 @@ export function FilterSheet({ open, onClose, filters: f, onChange, onReset, coun
                 {k}
               </Chip>
             ))}
-          </Section>
-
-          <Section title="並び順">
-            <Chip active={!isMultSort} onClick={() => onChange({ sort: DEFAULT_SORT })}>開始が早い順</Chip>
-            <Chip active={isMultSort} onClick={() => onChange({ sort: MULT_SORT })}>倍率が高い順</Chip>
           </Section>
 
           <div>

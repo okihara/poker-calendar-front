@@ -5,6 +5,7 @@ import { FilterSheet } from "./components/FilterSheet";
 import { Toolbar } from "./components/Toolbar";
 import { TournamentList } from "./components/TournamentList";
 import { TournamentTable } from "./components/TournamentTable";
+import { rowKey, type RowContext, type Section } from "./components/rowProps";
 import { fetchTournaments, type Tournament } from "./lib/data";
 import {
   DEFAULT_FILTERS,
@@ -12,6 +13,7 @@ import {
   filterRows,
   filtersFromURL,
   filtersToURL,
+  isExpired,
   sortRows,
   type Filters,
   type SortKey,
@@ -19,12 +21,21 @@ import {
 import { getDebugTime, getNow, parseDebugTime, setDebugTime } from "./lib/time";
 
 const HIGH_ROLLER_KEY = "highRollerMode";
+const FAVORITES_KEY = "favoriteShops";
 
 function loadHighRoller() {
   try {
     return localStorage.getItem(HIGH_ROLLER_KEY) === "1";
   } catch {
     return false;
+  }
+}
+
+function loadFavorites(): Set<string> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]"));
+  } catch {
+    return new Set();
   }
 }
 
@@ -36,6 +47,7 @@ export default function App() {
   const [status, setStatus] = useState<"loading" | "error" | "ok">("loading");
   const [filters, setFilters] = useState<Filters>(() => filtersFromURL(location.search));
   const [highRoller, setHighRoller] = useState(loadHighRoller);
+  const [favorites, setFavorites] = useState(loadFavorites);
   const [now, setNow] = useState(getNow);
   const [debugTime, setDebugTimeState] = useState(getDebugTime);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -93,11 +105,46 @@ export default function App() {
     }
   }, [highRoller]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites]));
+    } catch {
+      /* localStorage不可でも動作継続 */
+    }
+  }, [favorites]);
+
   const rows = useMemo(() => sortRows(filterRows(data, filters, now, highRoller), filters.sort), [data, filters, now, highRoller]);
+
+  // お気に入りの店があれば先頭にまとめる
+  const sections = useMemo<Section[]>(() => {
+    const fav = rows.filter((t) => favorites.has(t.shopName));
+    if (fav.length === 0) return [{ title: null, rows }];
+    const others = rows.filter((t) => !favorites.has(t.shopName));
+    return [
+      { title: "★ お気に入りの店", rows: fav },
+      ...(others.length ? [{ title: "その他の店", rows: others }] : []),
+    ];
+  }, [rows, favorites]);
+
+  // 表示中（レイト終了を除く）で倍率が一番高いもの
+  const bestKey = useMemo(() => {
+    let best: Tournament | null = null;
+    for (const t of rows) {
+      if (t.multiplier != null && !isExpired(t, now) && (!best || t.multiplier > best.multiplier!)) best = t;
+    }
+    return best ? rowKey(best) : null;
+  }, [rows, now]);
   const counts = useMemo(() => filterCounts(data, filters, now, highRoller), [data, filters, now, highRoller]);
 
   const change = (patch: Partial<Filters>) => setFilters((f) => ({ ...f, ...patch }));
-  const reset = () => setFilters((f) => ({ ...DEFAULT_FILTERS, date: f.date }));
+  const reset = () => setFilters((f) => ({ ...DEFAULT_FILTERS, date: f.date, sort: f.sort }));
+  const toggleFavorite = (shop: string) =>
+    setFavorites((prev) => {
+      const next = new Set(prev);
+      if (next.has(shop)) next.delete(shop);
+      else next.add(shop);
+      return next;
+    });
   const onShopClick = (shop: string) => change({ search: filters.search === shop ? "" : shop });
   const onSort = (key: SortKey) =>
     change({ sort: filters.sort.key === key ? { key, dir: filters.sort.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" } });
@@ -107,6 +154,7 @@ export default function App() {
     else setExternalUrl(t.link);
   };
 
+  const ctx: RowContext = { now, bestKey, favorites, onToggleFavorite: toggleFavorite, onOpen, onShopClick };
   const closeExternal = useCallback(() => setExternalUrl(null), []);
 
   return (
@@ -154,10 +202,10 @@ export default function App() {
         {status === "ok" && rows.length > 0 && (
           <>
             <div className="md:hidden">
-              <TournamentList rows={rows} now={now} onOpen={onOpen} onShopClick={onShopClick} />
+              <TournamentList sections={sections} ctx={ctx} />
             </div>
             <div className="hidden md:block">
-              <TournamentTable rows={rows} now={now} sort={filters.sort} onSort={onSort} onOpen={onOpen} onShopClick={onShopClick} />
+              <TournamentTable sections={sections} ctx={ctx} sort={filters.sort} onSort={onSort} />
             </div>
           </>
         )}

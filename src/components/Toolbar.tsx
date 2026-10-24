@@ -1,4 +1,4 @@
-import { MULT_SORT, MULT_TIERS, countActive, type Filters } from "../lib/filters";
+import { MULT_TIERS, SORT_TABS, countActive, sortTabId, type Filters } from "../lib/filters";
 import { fmtDateShort } from "../lib/time";
 import { Chip } from "./Chip";
 
@@ -11,11 +11,11 @@ type Props = {
   resultCount: number;
 };
 
-// 画面上部に固定する日付タブ＋チップ行
+// 画面上部に固定する日付タブ＋並べ替えタブ＋チップ行
 export function Toolbar({ now, filters: f, onChange, onOpenSheet, closingSoonCount, resultCount }: Props) {
   const tomorrow = new Date(now.getTime() + 24 * 3600_000);
   const active = countActive(f);
-  const isMultSort = f.sort.key === MULT_SORT.key && f.sort.dir === MULT_SORT.dir;
+  const currentSort = sortTabId(f.sort);
 
   // 適用中の条件をチップで表示（× で解除）
   const applied: { label: string; clear: () => void }[] = [];
@@ -24,7 +24,6 @@ export function Toolbar({ now, filters: f, onChange, onOpenSheet, closingSoonCou
   if (f.mult) applied.push({ label: MULT_TIERS.find((m) => m.key === f.mult)!.label, clear: () => onChange({ mult: null }) });
   if (f.keyword) applied.push({ label: f.keyword, clear: () => onChange({ keyword: null }) });
   if (f.showExpired) applied.push({ label: "レイト終了も表示", clear: () => onChange({ showExpired: false }) });
-  if (isMultSort) applied.push({ label: "倍率順", clear: () => onChange({ sort: { key: "start", dir: "asc" } }) });
 
   const tab = (key: Filters["date"], label: string, date: Date) => (
     <button
@@ -41,8 +40,25 @@ export function Toolbar({ now, filters: f, onChange, onOpenSheet, closingSoonCou
       <div className="flex items-end gap-5 px-4">
         {tab("today", "今日", now)}
         {tab("tomorrow", "明日", tomorrow)}
-        <span className="ml-auto pb-2 text-xs text-slate-500 tabular-nums">{resultCount}件</span>
       </div>
+
+      <div className="flex items-center gap-2 border-t border-slate-100 px-4 pt-2">
+        <div className="flex rounded-lg bg-slate-100 p-0.5 text-xs">
+          {SORT_TABS.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              aria-pressed={currentSort === s.id}
+              onClick={() => onChange({ sort: s.sort })}
+              className={`rounded-md px-3 py-1.5 font-semibold ${currentSort === s.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        <span className="ml-auto text-xs text-slate-500 tabular-nums">{resultCount}件</span>
+      </div>
+
       <div className="flex gap-1.5 overflow-x-auto px-4 py-2 [scrollbar-width:none]">
         <Chip active={active > 0} onClick={onOpenSheet}>
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
