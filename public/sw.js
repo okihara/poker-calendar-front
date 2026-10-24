@@ -1,9 +1,7 @@
-const CACHE_NAME = 'poker-search-v2';
+const CACHE_NAME = 'poker-search-v3';
+// JS/CSS はビルドごとにファイル名が変わるため、ここでは固定ファイルのみ事前キャッシュする
 const STATIC_ASSETS = [
   '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
   '/manifest.json',
   '/images/logo.png',
   '/images/icon-192.png',
@@ -54,6 +52,20 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Network-first for page navigations (新しいビルドの index.html を優先して取得)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('/', clone));
+          return response;
+        })
+        .catch(() => caches.match('/'))
     );
     return;
   }

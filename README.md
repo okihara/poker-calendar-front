@@ -1,48 +1,45 @@
-# ポーカー大会カレンダー（CSVビューア）
+# ポーカートナメ検索
 
-Googleスプレッドシートの公開CSVを取得して、ブラウザのみで表示・フィルタ・ソートできる最小フロントエンドです。
+ポーカートーナメント情報を一覧・絞り込みできるフロントエンド（https://poker-search.vercel.app/）。
 
-- データ元（CSV）: https://docs.google.com/spreadsheets/d/e/2PACX-1vQzRfrIH1vQwDxdZqaoE8t7Q33O5Hxig_18xijgI77yRhfgGUOEUsioJ9zD08hoNuMklZXOxqmmejfq/pub?gid=1600443875&single=true&output=csv
-- 依存: [PapaParse](https://www.papaparse.com/)（CDN）
+- データ元: Vercel Blob 上の JSON（`~/work/poker-calender` のスクレイパーが1日2回更新）。取得失敗時は Google スプレッドシートの公開CSVにフォールバック
+- 構成: Vite + React + TypeScript + Tailwind CSS v4
 
-## 使い方
+## 開発
 
-1. ローカルサーバを起動して `index.html` を開きます。
-   - Python がある場合:
-     ```sh
-     python3 -m http.server 5173
-     ```
-     その後、ブラウザで http://localhost:5173 を開く
+```sh
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # 型チェック + dist/ に出力
+```
 
-2. 画面上部のフィルタを使って絞り込み
-   - フリーテキスト: 店名/タイトル/住所/エリア/プライズ文
-   - エリア: CSV内のユニークエリア
-   - 日付: yyyy-mm-dd（本日が含まれていれば自動セット）
-   - 参加費(最小/最大): `entry_fee` 数値範囲
-
-3. ヘッダクリックでソート（昇降順トグル）
-   - デフォルトは開始時刻（昇順）
+Vercel では `vercel.json` の設定で `npm run build` → `dist/` を配信します。
 
 ## ファイル構成
 
-- `index.html` UI骨格と読み込み
-- `styles.css` 見た目（レスポンシブ/固定ヘッダ）
-- `app.js` ロジック（取得/パース/正規化/フィルタ/ソート/描画）
-
-## 実装メモ
-
-- 日付/時刻は `YYYY/MM/DD` と `YYYY/MM/DD HH:mm` を簡易パースし、`Date` に変換して比較。
-- 金額は `,` や `円` を除去して数値化。
-- CSVヘッダ想定:
-  ```
-  ID,shop_name,address,area,title,date,start_time,late_registration_time,entry_fee,add_on,prize_list,total_prize,guaranteed_amount,prize_text,link
-  ```
+```
+index.html               エントリ（OGP・PWAのmeta）
+public/                  そのまま配信される静的ファイル（manifest.json, sw.js, images/）
+src/
+  App.tsx                画面全体と状態（フィルター・データ・デバッグ時刻・ハイローラー）
+  lib/data.ts            取得（JSON/CSV）と正規化（倍率計算・日時パース）
+  lib/filters.ts         フィルター定義・絞り込み・件数集計・ソート・URL同期
+  lib/time.ts            getNow()（デバッグ時刻対応）と日時フォーマット
+  components/
+    Toolbar.tsx          上部固定の日付タブ＋チップ行
+    FilterSheet.tsx      絞り込みシート（スマホは下から、PCは中央）
+    TournamentList.tsx   スマホ用リスト
+    TournamentTable.tsx  PC用テーブル（768px以上）
+    Badges.tsx, Chip.tsx 倍率バッジ・チップ
+    ExternalDialog.tsx   大会ページの iframe 表示
+    DebugBar.tsx         デバッグ時刻バー
+```
 
 ## カスタマイズ
 
-- 列の追加/表示順の変更は `index.html` の `<thead>` と `app.js` の `render()` を編集。
-- 追加のフィルタは `applyFilters()` に条件を追加。
-- 初期並び替えは `state.sort` 初期値で変更可能。
+- エリア・キーワード・倍率帯の追加: `src/lib/filters.ts` の `AREAS` / `KEYWORDS` / `MULT_TIERS`
+- フィルター条件の追加: `Filters` 型と `filterRows()` に追加し、`FilterSheet.tsx` にUIを足す
+- URLクエリ（共有リンク）: `filtersFromURL()` / `filtersToURL()`
 
 ## ライセンス
 
