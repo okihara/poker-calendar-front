@@ -31,6 +31,18 @@ export type Filters = {
 
 export const DEFAULT_SORT: Sort = { key: "start", dir: "asc" };
 export const MULT_SORT: Sort = { key: "multiplier", dir: "desc" };
+export const LATE_SORT: Sort = { key: "lateReg", dir: "asc" };
+
+// 並べ替えタブ（id はURLの sort= の値）
+export const SORT_TABS = [
+  { id: "start", label: "開始順", sort: DEFAULT_SORT },
+  { id: "mult", label: "倍率順", sort: MULT_SORT },
+  { id: "late", label: "締切が近い", sort: LATE_SORT },
+] as const;
+
+export function sortTabId(sort: Sort) {
+  return SORT_TABS.find((t) => t.sort.key === sort.key && t.sort.dir === sort.dir)?.id ?? null;
+}
 
 export const DEFAULT_FILTERS: Filters = {
   date: "today",
@@ -55,6 +67,11 @@ export function multTier(m: number | null) {
 
 export function isExpired(t: Tournament, now: Date) {
   return !!t.lateReg && t.lateReg < now;
+}
+
+// レイト受付中（開始済み・締切前）
+export function isLive(t: Tournament, now: Date) {
+  return !!t.start && !!t.lateReg && t.start <= now && now <= t.lateReg;
 }
 
 export function isClosingSoon(t: Tournament, now: Date) {
@@ -132,7 +149,8 @@ export function filtersFromURL(search: string): Filters {
     search: p.get("search") || "",
     closingSoon: p.get("closing") === "1",
     showExpired: p.get("showLate") === "1",
-    sort: p.get("sortMult") === "1" ? MULT_SORT : DEFAULT_SORT,
+    // sortMult=1 は旧版の共有リンク互換
+    sort: SORT_TABS.find((t) => t.id === p.get("sort"))?.sort ?? (p.get("sortMult") === "1" ? MULT_SORT : DEFAULT_SORT),
   };
 }
 
@@ -147,6 +165,7 @@ export function filtersToURL(f: Filters, base: URLSearchParams): string {
   if (f.search.trim()) p.set("search", f.search.trim());
   if (f.closingSoon) p.set("closing", "1");
   if (f.showExpired) p.set("showLate", "1");
-  if (f.sort.key === "multiplier" && f.sort.dir === "desc") p.set("sortMult", "1");
+  const tab = sortTabId(f.sort);
+  if (tab && tab !== "start") p.set("sort", tab);
   return p.toString();
 }

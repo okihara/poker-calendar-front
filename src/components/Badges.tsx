@@ -55,3 +55,36 @@ export function MultBadge({ multiplier }: { multiplier: number | null }) {
 export function SatelliteBadge() {
   return <span className={`${pill} px-1.5 py-0.5 text-xs font-semibold bg-teal-50 text-teal-700 ring-teal-200`}>サテ</span>;
 }
+
+// レイト受付中（開始済み・締切前）
+export function LiveBadge() {
+  return (
+    <span className={`${pill} inline-flex items-center gap-1 px-1.5 py-0.5 text-[11px] bg-red-50 text-red-600 ring-red-200`}>
+      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
+      LIVE
+    </span>
+  );
+}
+
+// 表示中で倍率が一番高いトーナメントに付けるラベル
+export function BestLabel() {
+  return <span className={`${pill} px-1.5 py-0.5 text-[11px] bg-amber-400 text-amber-950 ring-amber-500`}>🏆 最高倍率</span>;
+}
+
+// お気に入りの店の切り替え（★/☆）
+export function FavoriteButton({ active, onClick }: { active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={active ? "お気に入りから外す" : "お気に入りに追加"}
+      aria-pressed={active}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      className={`-my-1 -ml-1 px-1 py-1 text-base leading-none ${active ? "text-amber-500" : "text-slate-300 hover:text-slate-500"}`}
+    >
+      {active ? "★" : "☆"}
+    </button>
+  );
+}
