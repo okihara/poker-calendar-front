@@ -4,51 +4,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-This project uses a simple static web server approach - no build tools or package.json:
-
 ```bash
-# Start local development server
-python3 -m http.server 5173
-# Access at http://localhost:5173
+npm install
+npm run dev     # http://localhost:5173
+npm run build   # tsc -b && vite build → dist/
 ```
 
 ## Architecture Overview
 
-This is a minimal frontend application for displaying and filtering poker tournament data from a Google Sheets CSV. The architecture is deliberately simple:
-
-### Core Components
-- **index.html**: Main HTML structure with semantic header, controls, and table layout
-- **app.js**: Main application logic (ES6 modules, vanilla JavaScript)
-- **styles.css**: Responsive CSS with mobile-first card layout and desktop table view
+Vite + React + TypeScript + Tailwind CSS v4. Single page, no router, no global state library — `App.tsx` holds all state in `useState`.
 
 ### Data Flow
-1. **Data Fetching**: Fetches pre-generated JSON from Vercel Blob (`JSON_URL` in app.js, uploaded twice daily by the poker-calender scraper repo). Falls back to Google Sheets CSV via PapaParse (CDN) if `JSON_URL` is empty or the fetch fails
-2. **Normalization**: Raw row data is normalized with date/time parsing and multiplier calculations
-3. **State Management**: Simple global state object with raw data, normalized data, filtered results, and sort state
-4. **Filtering**: Multiple filter types (area, multiplier range, title keywords, late registration status)
-5. **Rendering**: Dynamic DOM updates with responsive table/card layouts
+1. **Fetch** (`src/lib/data.ts`): JSON from Vercel Blob (`JSON_URL`, uploaded twice daily by the poker-calender scraper repo). Falls back to the Google Sheets CSV via PapaParse (dynamic import) if the fetch fails
+2. **Normalize** (`normalizeRow`): raw string rows → `Tournament` (dates parsed, fees as numbers, `multiplier` = total prize / (entry fee + add-on), `searchText` for keyword search)
+3. **Filter / sort** (`src/lib/filters.ts`): pure functions over a `Filters` object; `filterCounts()` computes the per-chip counts. Filters sync to URL query params (`area`, `mult`, `title`, `search`, `closing`, `showLate`, `sortMult`, `date`) for sharing
+4. **Render**: `TournamentList` (mobile, < 768px / `md`) and `TournamentTable` (PC) render the same rows
 
-### Key Features
-- **Responsive Design**: Desktop table view switches to mobile card layout at 768px
-- **Real-time Filtering**: Area buttons (六本木, 渋谷, etc.), multiplier ranges (10x, 20x, 30x+), title keywords
-- **Color-coded Multipliers**: Green (10-19x), orange (20-29x), purple (30x+)
-- **Late Registration**: Automatically hides expired tournaments with toggle option
-- **Sortable Columns**: Click headers to sort by date, time, fees, multipliers, etc.
+### UI
+- Header (logo, title, ♦10K+ high-roller toggle saved in localStorage) → sticky `Toolbar` (今日/明日 tabs, 絞り込み button, 締切1時間以内 quick chip, applied-filter chips with ×) → list/table
+- `FilterSheet`: native `<dialog>`; changes apply immediately, the bottom button only closes it
+- Multiplier tier colors live in `MULT_COLORS` (`Badges.tsx`): green 10x / blue 20x / violet 30x / rose 40x / amber 50x+
+- Tapping a shop name toggles a search for that shop; tapping a row opens the link (pokerfans in a new tab, others in `ExternalDialog` iframe)
 
-### Data Structure
-Expected CSV columns: `ID`, `shop_name`, `address`, `area`, `title`, `date`, `start_time`, `late_registration_time`, `entry_fee`, `add_on`, `prize_list`, `total_prize`, `guaranteed_amount`, `prize_text`, `link`
-
-## File Structure
-- All logic contained in 3 main files (no subdirectories or modules)
-- External dependency: PapaParse CDN for CSV parsing
-- Static assets served directly from root
-
-## Development Notes
-- No transpilation or bundling - uses native ES6 modules
-- CSS uses custom properties for theming
-- Mobile breakpoint: 768px (switches table to cards)
-- Date/time parsing handles Japanese formats (YYYY/MM/DD HH:mm)
-- Prize calculations parse various formats (万, 千, k, x2 multipliers)
+### Notes
+- Date tabs: a "day" is late-reg time within 00:00 → next day 06:00
+- Prize parsing handles 万, 千, k, x2 multipliers; multiplier ≥ 500 is treated as invalid; satellites have no multiplier
+- `public/sw.js` is a hand-written service worker (navigation network-first, assets cache-first). Bump `CACHE_NAME` when changing its logic
 - All time references use `getNow()` instead of `new Date()` to support debug time override
 
 ## Debug: Time Override
@@ -70,7 +51,7 @@ Hidden feature to override the current time for testing date filters and late re
 - `getNow()` が返す値（アプリ内の全 `new Date()` を置換済み）
 - 日付タブ（「今日」「明日」）のフィルタリング結果
 - レイトレジストレーション期限切れ判定
-- 日付タブのラベル表示（例: 2月14日(土) → 設定日に変化）
+- 日付タブのラベル表示（例: 2/14(土) → 設定日に変化）
 
 ### Example use cases
 ```

@@ -27,3 +27,6 @@ build/
 
 # OS / その他
 Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
